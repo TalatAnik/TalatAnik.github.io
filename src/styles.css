@@ -1,0 +1,11 @@
+/* Basic styles */
+body {
+    margin: 0;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+}
+
+#app {
+    width: 100vw;
+    height: 100vh;
+}

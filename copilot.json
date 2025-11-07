@@ -1,0 +1,50 @@
+{
+  "project": {
+    "name": "3D Portfolio Website",
+    "description": "A cinematic personal portfolio built with Three.js, GSAP, and vanilla JavaScript. The goal is to learn by collaborating with GitHub Copilot while keeping full creative control over the logic and structure."
+  },
+  "developer_intent": {
+    "primary_goal": "Use Copilot for scaffolding, setup, and partial code completions while understanding and writing all core logic manually.",
+    "learning_focus": [
+      "Three.js scene setup and animation",
+      "GSAP + ScrollTrigger integration",
+      "Shader materials and lighting in WebGL",
+      "Scroll-driven camera transitions",
+      "Optimized asset loading and modular organization"
+    ],
+    "copilot_rules": [
+      "Prefer vanilla JavaScript — do not suggest React or React Three Fiber.",
+      "Write modular and readable code, using ES module imports/exports.",
+      "Include short inline comments explaining reasoning and structure.",
+      "Do not generate long or complete files unless explicitly asked.",
+      "Avoid placeholder content unrelated to 3D or animation."
+    ]
+  },
+  "tech_stack": {
+    "javascript": {
+      "framework": "none",
+      "libraries": ["three", "gsap"],
+      "bundler": "vite"
+    },
+    "html_css": {
+      "approach": "minimalistic and clean",
+      "style_guide": "flat, cinematic aesthetic; use CSS for layout and GSAP for motion"
+    }
+  },
+  "file_structure": {
+    "src": [
+      "main.js (entry point)",
+      "three/scene.js (scene setup)",
+      "three/models.js (model loading and animation)",
+      "three/materials.js (custom shaders and toon materials)",
+      "ui/scroll.js (scroll triggers and camera motion)",
+      "ui/overlay.js (HTML overlays or text elements)"
+    ],
+    "public": ["index.html", "styles.css", "assets/"]
+  },
+  "collaboration_guidelines": {
+    "copilot_role": "Assist with setup, propose modular patterns, and explain unfamiliar code.",
+    "developer_role": "Write logic, refine design, and understand every part of the implementation.",
+    "communication_style": "Concise and educational — prefer short suggestions over long outputs."
+  }
+}
