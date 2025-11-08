@@ -1,15 +1,21 @@
-// GSAP animation logic for render target
+// GSAP animation logic for the car model
 import { gsap } from 'gsap';
-import { renderer } from './scene.js';
+import { model } from './scene.js'; // Assuming we export model
 
 export function initAnimation() {
-    // Example: Animate the canvas element
-    const canvas = renderer.domElement;
-    gsap.to(canvas, {
-        rotation: 360,
-        duration: 2,
-        ease: 'power2.inOut',
-        repeat: -1,
-        yoyo: true
-    });
+    // Wait for model to load, then animate with GSAP
+    const checkModel = () => {
+        if (model) {
+            gsap.to(model.rotation, {
+                y: '+=2', // Rotate 2 radians
+                duration: 4,
+                ease: 'power2.inOut',
+                repeat: -1,
+                yoyo: true
+            });
+        } else {
+            setTimeout(checkModel, 100);
+        }
+    };
+    checkModel();
 }
