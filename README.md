@@ -1,8 +1,10 @@
-# Portfolio Website — Three.js + GSAP
+# Portfolio Website — Talat Anik
 
 ## 🧠 Overview
 
-This is a **personal portfolio website** designed to showcase work through an immersive, scroll-driven experience powered by **Three.js** and **GSAP**. The project is built in **three phases**, progressively adding interactivity, 3D elements, and visual polish.
+This is a **personal portfolio website** for **Talat Anik**, designed with a focus on **award-worthy design** and immersive user experience. The site showcases full-stack development expertise through a minimalist, elegant design powered by **Three.js** and **GSAP**.
+
+The project is built in **three phases**, progressively adding interactivity, 3D elements, and visual polish.
 
 This is a **collaborative learning project** between the developer and **GitHub Copilot**.  
 Copilot assists with **scaffolding**, **boilerplate setup**, and **code suggestions**, while the developer writes and understands all core logic and architectural decisions.
@@ -11,49 +13,60 @@ Copilot assists with **scaffolding**, **boilerplate setup**, and **code suggesti
 
 ## 🎯 Project Phases
 
-### **Phase 1: Core Layout & Scroll Animation** (Current)
-Build the foundational scroll-driven layout with GSAP ScrollTrigger.
+### **Phase 1: Core Layout & Design** ✅ (Complete)
+Build the foundational structure with stunning visual design and scroll animations.
+
+**Design Principles:**
+- Minimalist elegance with sophisticated typography
+- Dark theme (#0a0a0a background) with subtle white accents
+- Mix-blend-mode navigation for modern aesthetic
+- Smooth, purposeful animations
 
 **Sections:**
-1. **Section 1 (Hero):**  
-   - Text on the left  
-   - Image/placeholder on the right  
-   - Image stays fixed initially, then moves horizontally (to the right) as user scrolls toward Section 2
+1. **Abstract Introduction:**  
+   - Two-sentence philosophical statement about craft and engineering  
+   - Large serif headline with secondary muted text  
+   - Placeholder for 3D visualization on the right  
+   - Grid layout with elegant spacing
 
-2. **Section 2:**  
-   - New text appears on the left when image moves  
-   - Image continues horizontal movement
+2. **Frontend Expertise:**  
+   - Clean section title  
+   - 4-column grid of core frontend skills  
+   - Hover effects with subtle elevation  
+   - Staggered fade-in animations
 
-3. **Section 3:**  
-   - Image scales down to a small size and centers itself in the viewport  
-   - Text for Section 3 animates in (does NOT scroll in naturally; triggered animation when user reaches this section)  
-   - Image then scrolls up out of view to reveal Section 3 content
+3. **Backend Expertise:**  
+   - Matching layout to frontend section  
+   - 4-column grid of backend skills  
+   - Consistent styling and interactions  
+   - Progressive reveal on scroll
 
-4. **Section 4:**  
-   - Two columns animate in from opposite sides  
-   - Footer animates in last
-
-**Global:**
-- Sticky top navigation bar throughout the experience
+**Navigation:**
+- Sticky, transparent navigation with no background  
+- Name (Talat Anik) on the left  
+- Minimal 3-line menu button on the right  
+- Mix-blend-mode for visibility over any background
 
 **Tech:**
-- GSAP + ScrollTrigger for all scroll animations  
-- Vanilla HTML/CSS with modular JS  
-- Placeholder image (later replaced with Three.js canvas in Phase 2)
+- GSAP + ScrollTrigger for scroll animations  
+- Vanilla HTML/CSS with modern CSS Grid  
+- Modular JavaScript (ES Modules)  
+- Custom CSS properties for theming
 
 ---
 
 ### **Phase 2: Three.js 3D Model Integration** (Planned)
-Replace the placeholder image with a **Three.js canvas** rendering an animated 3D model.
+Replace the placeholder with a **Three.js canvas** rendering an animated 3D model.
 
 **Features:**
-- Import and render a 3D model (GLB/GLTF)  
+- Import and render a 3D model (GLB/GLTF) with emissive toon shader  
 - Camera position changes as user scrolls (synchronized with scroll progress)  
 - Subtle camera movement following mouse position (parallax effect)  
-- Model stays in sync with scroll animations from Phase 1
+- Model integrated into intro section layout
 
 **Tech:**
-- Three.js (scene, camera, lighting, model loader)  
+- Three.js (scene, camera, lighting, GLTFLoader)  
+- Custom emissive toon shader (already implemented in src/materials.js)  
 - GSAP to drive camera animations  
 - Mouse event listeners for interactive camera movement
 
@@ -65,9 +78,10 @@ Enhance the site with decorative SVG animations and micro-interactions.
 **Features:**
 - Animated SVG graphics and icons  
 - Smooth transitions between sections  
-- Hover effects and interactive elements  
+- Enhanced hover effects and interactive elements  
 - Loading animations  
-- Scroll progress indicators
+- Scroll progress indicators  
+- Additional micro-interactions
 
 **Tech:**
 - GSAP for SVG animations  
@@ -78,9 +92,10 @@ Enhance the site with decorative SVG animations and micro-interactions.
 
 ## 🧩 Tech Stack
 
-- **Three.js** — WebGL 3D rendering  
-- **GSAP + ScrollTrigger** — Scroll-driven animations and timelines  
-- **Vite** — Fast dev server and build tool  
+- **Three.js 0.160.0** — WebGL 3D rendering with custom shaders  
+- **GSAP 3.12.0 + ScrollTrigger** — Scroll-driven animations and timelines  
+- **Vite 5.0.0** — Fast dev server and build tool  
+- **gh-pages 6.1.0** — GitHub Pages deployment  
 - **Vanilla JavaScript (ES Modules)** — Modular, maintainable code  
 - **HTML5/CSS3** — Semantic markup and modern styling
 
@@ -89,15 +104,19 @@ Enhance the site with decorative SVG animations and micro-interactions.
 ## 🏗️ Current Status
 
 ### ✅ Completed
-- Basic project scaffolding (Vite, package.json, index.html)  
-- Three.js scene setup with GLTFLoader  
-- Emissive toon shader material for black-and-white clamped rendering  
-- On-screen UI control for threshold adjustment  
-- Material caching and performance optimizations  
-- Minimal standalone HTML demo for model rendering
+- Phase 1: Complete portfolio structure with 3 main sections  
+- Award-worthy visual design with dark minimalist theme  
+- Sticky transparent navigation (name + menu button)  
+- Abstract introduction section with philosophical copy  
+- Frontend & Backend expertise sections with skill grids  
+- GSAP ScrollTrigger animations for all sections  
+- Responsive design for mobile, tablet, desktop  
+- GitHub Pages deployment configuration  
+- Emissive toon shader material (ready for Phase 2)  
+- Three.js scene setup with GLTFLoader (ready for Phase 2)
 
 ### 🚧 In Progress
-- Phase 1: Implementing four-section scroll layout with GSAP ScrollTrigger  
+- Testing and refinement of Phase 1 implementation  
 - Setting up sticky navigation  
 - Building image/placeholder movement and scaling animations
 

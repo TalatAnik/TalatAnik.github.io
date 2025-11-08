@@ -3,87 +3,85 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Portfolio - Your Name</title>
-  <meta name="description" content="Portfolio showcasing creative work with immersive scroll animations">
+  <title>Talat Anik - Portfolio</title>
+  <meta name="description" content="Award-winning portfolio showcasing full-stack development expertise">
 </head>
 <body>
   <!-- Sticky Navigation -->
   <nav class="nav">
-    <div class="nav-container">
-      <a href="#" class="nav-logo">Portfolio</a>
-      <ul class="nav-menu">
-        <li><a href="#hero">Home</a></li>
-        <li><a href="#section2">About</a></li>
-        <li><a href="#section3">Work</a></li>
-        <li><a href="#section4">Contact</a></li>
-      </ul>
-    </div>
+    <div class="nav-name">Talat Anik</div>
+    <button class="menu-button" aria-label="Menu">
+      <span class="menu-line"></span>
+      <span class="menu-line"></span>
+      <span class="menu-line"></span>
+    </button>
   </nav>
 
   <main>
-    <!-- Section 1: Hero -->
-    <section id="hero" class="section">
-      <div class="section-content">
-        <div class="text-content">
-          <h1>Welcome to My Portfolio</h1>
-          <p>Creative developer specializing in interactive web experiences</p>
-          <a href="#section2" class="cta-button">Explore</a>
+    <!-- Section 1: Abstract Introduction -->
+    <section id="intro" class="section intro-section">
+      <div class="intro-content">
+        <h1 class="intro-title">Crafting digital experiences that merge artistry with precision engineering.</h1>
+        <p class="intro-text">Where creative vision meets technical excellence, transforming complex challenges into elegant, intuitive solutions.</p>
+      </div>
+      <div class="image-container" id="imageContainer">
+        <div class="placeholder-image"></div>
+      </div>
+    </section>
+
+    <!-- Section 2: Frontend Skills -->
+    <section id="frontend" class="section skills-section frontend-section">
+      <div class="skills-header">
+        <h2 class="section-title">Frontend Expertise</h2>
+      </div>
+      <div class="skills-grid">
+        <div class="skill-item">
+          <h3>Modern JavaScript</h3>
+          <p>ES6+, TypeScript, Reactive Patterns</p>
         </div>
-        <div class="image-container" id="imageContainer">
-          <div class="placeholder-image">
-            <!-- Placeholder - will be replaced with Three.js canvas in Phase 2 -->
-            <span>3D Model</span>
-          </div>
+        <div class="skill-item">
+          <h3>3D & Animation</h3>
+          <p>Three.js, GSAP, WebGL Shaders</p>
+        </div>
+        <div class="skill-item">
+          <h3>Frameworks</h3>
+          <p>React, Vue, Next.js</p>
+        </div>
+        <div class="skill-item">
+          <h3>UI/UX Design</h3>
+          <p>Responsive Design, Accessibility, Performance</p>
         </div>
       </div>
     </section>
 
-    <!-- Section 2: About -->
-    <section id="section2" class="section">
-      <div class="section-content">
-        <div class="text-content">
-          <h2>About Me</h2>
-          <p>Passionate about creating immersive digital experiences that blend design and technology.</p>
-          <p>Specializing in Three.js, GSAP, and modern web development.</p>
-        </div>
+    <!-- Section 3: Backend Skills -->
+    <section id="backend" class="section skills-section backend-section">
+      <div class="skills-header">
+        <h2 class="section-title">Backend Expertise</h2>
       </div>
-    </section>
-
-    <!-- Section 3: Work -->
-    <section id="section3" class="section">
-      <div class="section-content">
-        <div class="text-content" id="section3Text">
-          <h2>My Work</h2>
-          <p>A collection of projects showcasing interactive web experiences and 3D visualizations.</p>
-          <div class="work-grid">
-            <div class="work-item">Project 1</div>
-            <div class="work-item">Project 2</div>
-            <div class="work-item">Project 3</div>
-          </div>
+      <div class="skills-grid">
+        <div class="skill-item">
+          <h3>Server Architecture</h3>
+          <p>Node.js, Express, RESTful APIs</p>
         </div>
-      </div>
-    </section>
-
-    <!-- Section 4: Contact -->
-    <section id="section4" class="section">
-      <div class="section-content section4-content">
-        <div class="column" id="leftColumn">
-          <h3>Get in Touch</h3>
-          <p>Email: your.email@example.com</p>
-          <p>LinkedIn: /yourprofile</p>
-          <p>GitHub: /yourprofile</p>
+        <div class="skill-item">
+          <h3>Databases</h3>
+          <p>PostgreSQL, MongoDB, Redis</p>
         </div>
-        <div class="column" id="rightColumn">
-          <h3>Let's Connect</h3>
-          <p>Available for freelance projects and collaborations.</p>
-          <a href="mailto:your.email@example.com" class="cta-button">Send Message</a>
+        <div class="skill-item">
+          <h3>Cloud & DevOps</h3>
+          <p>AWS, Docker, CI/CD Pipelines</p>
+        </div>
+        <div class="skill-item">
+          <h3>Security</h3>
+          <p>Authentication, Encryption, Best Practices</p>
         </div>
       </div>
     </section>
 
     <!-- Footer -->
     <footer id="footer" class="footer">
-      <p>&copy; 2025 Your Name. All rights reserved.</p>
+      <p>&copy; 2025 Talat Anik. All rights reserved.</p>
     </footer>
   </main>
 

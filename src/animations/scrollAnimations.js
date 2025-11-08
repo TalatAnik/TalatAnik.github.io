@@ -6,111 +6,122 @@ gsap.registerPlugin(ScrollTrigger);
 
 export function initScrollAnimations() {
   // ===========================
-  // Section 1 → Section 2: Horizontal Image Movement
+  // Intro Section: Text Fade In
+  // ===========================
+  gsap.to('.intro-title', {
+    opacity: 1,
+    y: 0,
+    duration: 1.2,
+    ease: 'power3.out',
+    scrollTrigger: {
+      trigger: '.intro-section',
+      start: 'top 80%',
+      toggleActions: 'play none none reverse'
+    }
+  });
+
+  gsap.to('.intro-text', {
+    opacity: 1,
+    y: 0,
+    duration: 1.2,
+    delay: 0.2,
+    ease: 'power3.out',
+    scrollTrigger: {
+      trigger: '.intro-section',
+      start: 'top 80%',
+      toggleActions: 'play none none reverse'
+    }
+  });
+
+  // ===========================
+  // Image Movement Through Sections
   // ===========================
   const imageContainer = document.getElementById('imageContainer');
   
   gsap.to(imageContainer, {
-    x: '50vw', // Move image to the right
+    x: '50vw',
     scrollTrigger: {
-      trigger: '#hero',
+      trigger: '.intro-section',
       start: 'top top',
       end: 'bottom top',
-      scrub: true,
-      // markers: true // Uncomment for debugging
+      scrub: true
     }
   });
 
   // ===========================
-  // Section 3: Image Scale Down & Center
+  // Frontend Section: Animations
   // ===========================
-  gsap.to(imageContainer, {
-    scale: 0.3,
-    x: 0, // Reset horizontal position (center)
+  gsap.to('.frontend-section .section-title', {
+    opacity: 1,
     y: 0,
-    scrollTrigger: {
-      trigger: '#section3',
-      start: 'top center',
-      end: 'center center',
-      scrub: true,
-      // markers: true
-    }
-  });
-
-  // Section 3: Image Scroll Out of View
-  gsap.to(imageContainer, {
-    y: '-100vh',
-    scrollTrigger: {
-      trigger: '#section3',
-      start: 'center center',
-      end: 'bottom top',
-      scrub: true,
-      // markers: true
-    }
-  });
-
-  // ===========================
-  // Section 3: Text Animate In (Triggered, not scrolled)
-  // ===========================
-  const section3Text = document.getElementById('section3Text');
-  
-  gsap.from(section3Text, {
-    opacity: 0,
-    y: 50,
     duration: 1,
-    ease: 'power2.out',
+    ease: 'power3.out',
     scrollTrigger: {
-      trigger: '#section3',
-      start: 'top center',
-      toggleActions: 'play none none none'
-      // markers: true
+      trigger: '.frontend-section',
+      start: 'top 70%',
+      toggleActions: 'play none none reverse'
     }
   });
 
-  // ===========================
-  // Section 4: Columns Animate In from Sides
-  // ===========================
-  const leftColumn = document.getElementById('leftColumn');
-  const rightColumn = document.getElementById('rightColumn');
-  
-  gsap.to(leftColumn, {
+  gsap.to('.frontend-section .skill-item', {
     opacity: 1,
-    x: 0,
-    duration: 1,
-    ease: 'power2.out',
+    y: 0,
+    duration: 0.8,
+    stagger: 0.15,
+    ease: 'power3.out',
     scrollTrigger: {
-      trigger: '#section4',
-      start: 'top center',
-      toggleActions: 'play none none none'
-    }
-  });
-
-  gsap.to(rightColumn, {
-    opacity: 1,
-    x: 0,
-    duration: 1,
-    ease: 'power2.out',
-    scrollTrigger: {
-      trigger: '#section4',
-      start: 'top center',
-      toggleActions: 'play none none none'
+      trigger: '.frontend-section',
+      start: 'top 60%',
+      toggleActions: 'play none none reverse'
     }
   });
 
   // ===========================
-  // Footer: Animate In Last
+  // Backend Section: Animations
+  // ===========================
+  gsap.to('.backend-section .section-title', {
+    opacity: 1,
+    y: 0,
+    duration: 1,
+    ease: 'power3.out',
+    scrollTrigger: {
+      trigger: '.backend-section',
+      start: 'top 70%',
+      toggleActions: 'play none none reverse'
+    }
+  });
+
+  gsap.to('.backend-section .skill-item', {
+    opacity: 1,
+    y: 0,
+    duration: 0.8,
+    stagger: 0.15,
+    ease: 'power3.out',
+    scrollTrigger: {
+      trigger: '.backend-section',
+      start: 'top 60%',
+      toggleActions: 'play none none reverse'
+    }
+  });
+
+  // ===========================
+  // Footer: Final Animation
   // ===========================
   const footer = document.getElementById('footer');
   
   gsap.to(footer, {
     opacity: 1,
-    y: 0,
-    duration: 1,
+    duration: 0.8,
     ease: 'power2.out',
     scrollTrigger: {
-      trigger: '#section4',
-      start: 'center center',
-      toggleActions: 'play none none none'
+      trigger: footer,
+      start: 'top 90%',
+      toggleActions: 'play none none reverse'
     }
   });
+
+  // Refresh ScrollTrigger to ensure proper positioning
+  setTimeout(() => {
+    ScrollTrigger.refresh();
+  }, 100);
 }
