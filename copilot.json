@@ -1,24 +1,87 @@
 {
   "project": {
-    "name": "3D Portfolio Website",
-    "description": "A cinematic personal portfolio built with Three.js, GSAP, and vanilla JavaScript. The goal is to learn by collaborating with GitHub Copilot while keeping full creative control over the logic and structure."
+    "name": "Portfolio Website — Three.js + GSAP",
+    "description": "An immersive scroll-driven portfolio website built in three phases: (1) GSAP scroll animations, (2) Three.js 3D model integration, (3) SVG animations and polish. Deployed to GitHub Pages.",
+    "repository": "TalatAnik.github.io",
+    "deployment": "GitHub Pages"
   },
   "developer_intent": {
-    "primary_goal": "Use Copilot for scaffolding, setup, and partial code completions while understanding and writing all core logic manually.",
+    "primary_goal": "Build a professional portfolio website with scroll-driven animations and 3D elements while learning through collaboration with GitHub Copilot.",
     "learning_focus": [
-      "Three.js scene setup and animation",
-      "GSAP + ScrollTrigger integration",
-      "Shader materials and lighting in WebGL",
-      "Scroll-driven camera transitions",
-      "Optimized asset loading and modular organization"
+      "GSAP ScrollTrigger for advanced scroll animations",
+      "Three.js scene setup with scroll-driven camera",
+      "Mouse-driven parallax effects",
+      "Modular ES6 architecture",
+      "Performance optimization for web animations"
     ],
     "copilot_rules": [
-      "Prefer vanilla JavaScript — do not suggest React or React Three Fiber.",
-      "Write modular and readable code, using ES module imports/exports.",
-      "Include short inline comments explaining reasoning and structure.",
-      "Do not generate long or complete files unless explicitly asked.",
-      "Avoid placeholder content unrelated to 3D or animation."
+      "Prefer vanilla JavaScript — do not suggest React or frameworks unless explicitly requested.",
+      "Write modular and readable code using ES module imports/exports.",
+      "Include concise inline comments explaining structure and reasoning.",
+      "Do not generate complete files or long boilerplate unless explicitly asked.",
+      "Focus on educational, production-ready code over placeholder content."
     ]
+  },
+  "project_phases": {
+    "phase_1": {
+      "name": "Core Layout & Scroll Animation",
+      "status": "in-progress",
+      "description": "Build foundational four-section scroll layout with GSAP ScrollTrigger",
+      "features": [
+        "Section 1: Hero with text left, image/placeholder right (image moves horizontally on scroll)",
+        "Section 2: New text left, image continues moving right",
+        "Section 3: Image scales down, centers, then scrolls out; text animates in (triggered, not scrolled)",
+        "Section 4: Two columns animate in from sides, footer animates in last",
+        "Sticky top navigation throughout"
+      ],
+      "tech": ["GSAP", "ScrollTrigger", "Vanilla JS", "HTML/CSS"],
+      "deliverables": [
+        "Responsive HTML structure with four sections",
+        "GSAP ScrollTrigger animations for image movement and scaling",
+        "Sticky navigation component",
+        "Triggered text animations for Section 3",
+        "Column and footer animations for Section 4"
+      ]
+    },
+    "phase_2": {
+      "name": "Three.js 3D Model Integration",
+      "status": "planned",
+      "description": "Replace placeholder image with Three.js canvas rendering an animated 3D model",
+      "features": [
+        "Import and render GLB/GLTF 3D model",
+        "Scroll-driven camera position changes",
+        "Mouse-driven camera parallax (subtle movement)",
+        "Sync 3D canvas with scroll animations from Phase 1"
+      ],
+      "tech": ["Three.js", "GLTFLoader", "GSAP", "Mouse events"],
+      "deliverables": [
+        "Three.js scene with lighting and camera setup",
+        "3D model loader and renderer",
+        "Camera animation timeline synced to scroll",
+        "Mouse parallax controller",
+        "Integration with existing scroll layout"
+      ]
+    },
+    "phase_3": {
+      "name": "SVG Animations & Visual Polish",
+      "status": "planned",
+      "description": "Enhance site with decorative SVG animations and micro-interactions",
+      "features": [
+        "Animated SVG graphics and icons",
+        "Smooth section transitions",
+        "Hover effects and interactive elements",
+        "Loading animations",
+        "Scroll progress indicators"
+      ],
+      "tech": ["GSAP", "SVG", "CSS transitions", "lottie-web (optional)"],
+      "deliverables": [
+        "SVG animation library",
+        "Micro-interaction components",
+        "Loading screen with progress indicator",
+        "Polished hover states",
+        "Final deployment to GitHub Pages"
+      ]
+    }
   },
   "tech_stack": {
     "javascript": {
@@ -27,24 +90,43 @@
       "bundler": "vite"
     },
     "html_css": {
-      "approach": "minimalistic and clean",
-      "style_guide": "flat, cinematic aesthetic; use CSS for layout and GSAP for motion"
+      "approach": "semantic HTML5 with modern CSS",
+      "style_guide": "minimalistic and clean; use CSS for layout, GSAP for motion"
     }
   },
   "file_structure": {
     "src": [
       "main.js (entry point)",
-      "three/scene.js (scene setup)",
-      "three/models.js (model loading and animation)",
-      "three/materials.js (custom shaders and toon materials)",
-      "ui/scroll.js (scroll triggers and camera motion)",
-      "ui/overlay.js (HTML overlays or text elements)"
+      "scene.js (Three.js setup - Phase 2)",
+      "materials.js (custom shaders - Phase 2)",
+      "styles.css (global styles)",
+      "ui/controls.js (on-screen controls)",
+      "ui/scrollScale.js (scroll-driven scaling - Phase 1)"
     ],
-    "public": ["index.html", "styles.css", "assets/"]
+    "public": ["index.html", "assets/ (models, textures, images)"]
   },
   "collaboration_guidelines": {
-    "copilot_role": "Assist with setup, propose modular patterns, and explain unfamiliar code.",
-    "developer_role": "Write logic, refine design, and understand every part of the implementation.",
+    "copilot_role": "Assist with setup, propose modular patterns, explain unfamiliar code.",
+    "developer_role": "Write core logic, refine design, understand every implementation.",
     "communication_style": "Concise and educational — prefer short suggestions over long outputs."
+  },
+  "current_progress": {
+    "completed": [
+      "Project scaffolding (Vite, package.json)",
+      "Three.js scene with GLTFLoader",
+      "Emissive toon shader material",
+      "On-screen threshold control UI",
+      "Performance optimizations (material caching)"
+    ],
+    "in_progress": [
+      "Phase 1: Four-section scroll layout",
+      "Sticky navigation setup",
+      "Image movement and scaling animations"
+    ],
+    "next_steps": [
+      "Complete Phase 1 GSAP animations",
+      "Test scroll timing and transitions",
+      "Begin Phase 2 Three.js integration"
+    ]
   }
 }

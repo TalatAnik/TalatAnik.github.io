@@ -1,8 +1,13 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-    // Basic Vite config for Three.js project
+    base: '/', // Change to '/repo-name/' if deploying to username.github.io/repo-name
+    build: {
+        outDir: 'dist',
+        assetsDir: 'assets',
+    },
     server: {
-        open: true
+        open: true,
+        port: 3000
     }
 });

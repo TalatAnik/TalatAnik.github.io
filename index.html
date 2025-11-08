@@ -1,12 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Portfolio</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio - Your Name</title>
+  <meta name="description" content="Portfolio showcasing creative work with immersive scroll animations">
 </head>
 <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
+  <!-- Sticky Navigation -->
+  <nav class="nav">
+    <div class="nav-container">
+      <a href="#" class="nav-logo">Portfolio</a>
+      <ul class="nav-menu">
+        <li><a href="#hero">Home</a></li>
+        <li><a href="#section2">About</a></li>
+        <li><a href="#section3">Work</a></li>
+        <li><a href="#section4">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main>
+    <!-- Section 1: Hero -->
+    <section id="hero" class="section">
+      <div class="section-content">
+        <div class="text-content">
+          <h1>Welcome to My Portfolio</h1>
+          <p>Creative developer specializing in interactive web experiences</p>
+          <a href="#section2" class="cta-button">Explore</a>
+        </div>
+        <div class="image-container" id="imageContainer">
+          <div class="placeholder-image">
+            <!-- Placeholder - will be replaced with Three.js canvas in Phase 2 -->
+            <span>3D Model</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: About -->
+    <section id="section2" class="section">
+      <div class="section-content">
+        <div class="text-content">
+          <h2>About Me</h2>
+          <p>Passionate about creating immersive digital experiences that blend design and technology.</p>
+          <p>Specializing in Three.js, GSAP, and modern web development.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: Work -->
+    <section id="section3" class="section">
+      <div class="section-content">
+        <div class="text-content" id="section3Text">
+          <h2>My Work</h2>
+          <p>A collection of projects showcasing interactive web experiences and 3D visualizations.</p>
+          <div class="work-grid">
+            <div class="work-item">Project 1</div>
+            <div class="work-item">Project 2</div>
+            <div class="work-item">Project 3</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4: Contact -->
+    <section id="section4" class="section">
+      <div class="section-content section4-content">
+        <div class="column" id="leftColumn">
+          <h3>Get in Touch</h3>
+          <p>Email: your.email@example.com</p>
+          <p>LinkedIn: /yourprofile</p>
+          <p>GitHub: /yourprofile</p>
+        </div>
+        <div class="column" id="rightColumn">
+          <h3>Let's Connect</h3>
+          <p>Available for freelance projects and collaborations.</p>
+          <a href="mailto:your.email@example.com" class="cta-button">Send Message</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="footer" class="footer">
+      <p>&copy; 2025 Your Name. All rights reserved.</p>
+    </footer>
+  </main>
+
+  <script type="module" src="/src/main.js"></script>
 </body>
 </html>
