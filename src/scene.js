@@ -39,7 +39,7 @@ export function initScene() {
     const loader = new GLTFLoader();
     const textureLoader = new TextureLoader();
     loader.load(
-        '/assets/car.glb', // Path to the GLTF file
+        '/assets/car2.glb', // Path to the GLTF file
         (gltf) => {
             console.log('Model loaded successfully', gltf);
             model = gltf.scene;
@@ -58,15 +58,23 @@ export function initScene() {
                     const meshes = [];
                     model.traverse((n) => { if (n.isMesh) meshes.push(n); });
 
+                    // Cache shader materials per source texture to avoid recompiling the same shader many times
+                    const materialCache = new Map();
+
                     // For each mesh, create a toon emissive material using either the mesh's existing map or the palette texture
                     meshes.forEach((child) => {
-                        console.log('Replacing material for mesh:', child.name || child.uuid);
+                        // Minimal logging to avoid slowing down load
 
                         // Determine source texture: prefer the mesh's own map if present
                         const sourceMap = (child.material && child.material.map) ? child.material.map : paletteTex;
 
-                        // Create new shader material
-                        const newMat = createEmissiveToonMaterial(sourceMap, { threshold: 0.5, emissiveIntensity: 1.0 });
+                        // Create or reuse shader material for this sourceMap
+                        const cacheKey = sourceMap ? sourceMap.uuid : 'null_map';
+                        let newMat = materialCache.get(cacheKey);
+                        if (!newMat) {
+                            newMat = createEmissiveToonMaterial(sourceMap, { threshold: 0.5, emissiveIntensity: 1.0 });
+                            materialCache.set(cacheKey, newMat);
+                        }
 
                         // Preserve basic side/visibility settings
                         newMat.side = Array.isArray(child.material) ? THREE.FrontSide : (child.material.side || THREE.FrontSide);
@@ -85,20 +93,7 @@ export function initScene() {
 
                         child.material = newMat;
 
-                        // Add a simple black outline: a back-faced, slightly scaled copy of the mesh
-                        try {
-                            const outlineMat = new THREE.MeshBasicMaterial({ color: 0x000000, side: THREE.BackSide });
-                            // Reuse geometry where possible
-                            const outlineMesh = new THREE.Mesh(child.geometry, outlineMat);
-                            // Place outline as a child so it follows mesh transforms
-                            outlineMesh.name = (child.name || child.uuid) + '_outline';
-                            outlineMesh.scale.copy(child.scale).multiplyScalar(1.03);
-                            outlineMesh.position.set(0, 0, 0);
-                            outlineMesh.rotation.set(0, 0, 0);
-                            child.add(outlineMesh);
-                        } catch (e) {
-                            console.warn('Failed to create outline for mesh', child.name || child.uuid, e);
-                        }
+                        // Outline effect intentionally removed to reduce draw calls and improve performance
                     });
 
                     console.log('Palette texture applied and toon materials created');
