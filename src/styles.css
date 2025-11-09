@@ -1,7 +1,21 @@
 /* Basic reset */
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; }
-body { font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; overflow-x: hidden; }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+html,
+body {
+  height: 100%;
+}
+body {
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial;
+  overflow-x: hidden;
+}
+
+/* Ensure all headings and paragraphs are block-level so they stack vertically */
+h1, h2, h3, h4, h5, h6, p { display: block; width: 100%; }
 
 /* Canvas (acts like the demo 'box') */
 #canvas {
@@ -29,11 +43,125 @@ body { font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvet
 }
 
 /* make sections transparent so the canvas background shows through */
-.section { background: transparent; color: #111; }
+.section {
+  background: transparent;
+  color: #111;
+}
 
 /* Simple content wrapper */
-.container { max-width: 960px; padding: 2rem; text-align: center; }
+.container {
+  max-width: 1200px;
+  padding: 2.5rem;
+  text-align: center;
+}
+
+/* Larger container and heading sizes for desktop */
+@media (min-width: 1024px) {
+  .container { max-width: 1400px; padding: 3rem; }
+  h1 { font-size: 6.25rem; line-height: 1.05; }
+  h2 { font-size: 5.25rem; }
+  .section { font-size: clamp(1.25rem, 2.2vw, 1.25rem); }
+}
+
+/* Hide the native scrollbar only when Lenis is active (applied via JS) */
+html.lenis-active, body.lenis-active { overflow: hidden; }
+
+/* Hide native scrollbars when Lenis is active */
+html.lenis-active::-webkit-scrollbar, body.lenis-active::-webkit-scrollbar { width: 0; height: 0; }
+html.lenis-active, body.lenis-active { scrollbar-width: none; -ms-overflow-style: none; }
+
+/* Custom overlay scrollbar (only the thumb is visible) */
+.custom-scrollbar {
+  position: fixed;
+  right: 2px; /* moved much closer to the right wall */
+  top: 12px;
+  bottom: 12px;
+  width: 8px;
+  pointer-events: none; /* allow interaction for dragging */
+  z-index: 9999;
+}
+.custom-scrollbar .thumb {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  background: rgba(255,255,255,0.95);
+  border-radius: 999px;
+  transform: translateY(0);
+  transition: transform 0.12s linear, height 0.12s linear, opacity 0.12s linear;
+  opacity: 0.95;
+}
+.custom-scrollbar.hidden { opacity: 0; pointer-events: none; }
+
+.custom-scrollbar .thumb { cursor: pointer; }
+.custom-scrollbar .thumb.dragging { background: rgba(17,17,17,0.9); transform: scaleX(1); }
+
+/* Inverted-thumb effect: the thumb shows an inverted color of whatever is behind it.
+   We achieve this with mix-blend-mode: difference and a bright background. */
+
+/* Backdrop-filter inverted-thumb effect. This inverts the pixels behind the thumb.
+   We keep mix-blend-mode as a fallback for browsers that don't support backdrop-filter. */
+.custom-scrollbar .thumb {
+  /* Default thumb appearance. Color will be set dynamically via JS to better match/invert the underlying content. */
+  background: rgba(255,255,255,0.95);
+  border-radius: 999px;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.06) inset, 0 2px 8px rgba(0,0,0,0.12);
+  will-change: transform, height, opacity, background-color;
+}
+
+/* Stronger appearance while dragging */
+.custom-scrollbar .thumb.dragging {
+  filter: brightness(1.05);
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.12) inset, 0 6px 18px rgba(0,0,0,0.18);
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .custom-scrollbar .thumb { transition: none; }
+}
+
+/* Section inner: two-column layout on desktop, single column on mobile */
+.section-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: center;
+}
+
+.col-left { text-align: left; }
+.col-right { text-align: left; }
+
+/* Make the hero left column hidden only when JS is active (so content remains visible if JS fails) */
+body.js #section1 .col-left { opacity: 0; transform: translateY(20px); }
+
+/* Responsive: single column on small screens */
+@media (max-width: 768px) {
+  .section-inner { grid-template-columns: 1fr; }
+  .container { padding: 1.25rem; }
+  /* center text on mobile for a nicer stacked look */
+  .col-left, .col-right { text-align: center; }
+}
 
 /* small helper to make messages visible over canvas */
-.section h1, .section h2 { margin-bottom: 0.5rem; }
-.section p { opacity: 0.9; }
+.section h1,
+.section h2 {
+  margin-bottom: 0.5rem;
+}
+.section p {
+  opacity: 0.9;
+}
+
+/* Typography rules requested by user */
+/* All h2 headings use Bebas Neue (display font) */
+h1,
+h2,
+.section h2 {
+  font-family: "Bebas Neue", system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+}
+
+/* All p tags use Alumni Sans Pinstripe as requested */
+p,
+.section p {
+  font-family: "Alumni Sans Pinstripe", system-ui, -apple-system, "Segoe UI",
+    Roboto, Arial;
+  font-weight: 600;
+}
