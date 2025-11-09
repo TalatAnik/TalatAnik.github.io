@@ -18,13 +18,15 @@ body {
 h1, h2, h3, h4, h5, h6, p { display: block; width: 100%; }
 
 /* Canvas (acts like the demo 'box') */
+/* Use a stable --vh variable for mobile to avoid address-bar resizing issues.
+   The canvas sits in a fixed full-bleed container using inset:0 so it always
+   covers the viewport even when the viewport height changes during scroll. */
 #canvas {
   position: fixed;
-  top: 50%;
-  left: 50%;
-  width: 100vw;
-  height: 100vh;
-  transform: translate(-50%, -50%) scale(1);
+  inset: 0; /* top:0; right:0; bottom:0; left:0 */
+  width: 100%;
+  height: calc(var(--vh, 1vh) * 100);
+  transform: translateZ(0) scale(1);
   transform-origin: center center;
   background: rgba(255, 230, 130, 0.9); /* pleasant pale yellow */
   z-index: 0;
@@ -63,9 +65,34 @@ h1, h2, h3, h4, h5, h6, p { display: block; width: 100%; }
   .section { font-size: clamp(1.25rem, 2.2vw, 1.25rem); }
   /* Slightly larger paragraph text on desktop for better readability */
   p, .section p { font-size: 2.125rem; line-height: 1.5; }
+
+  /* Increase minimum height of section1 and section2 on desktop so their content
+     doesn't overlap while scrolling between them. Tweak 110vh as needed. */
+  #section2 { min-height: 140vh; }
 }
 
 /* (section 2 desktop overrides removed — section2 content will use the default section layout) */
+
+/* Desktop: make section 2 a single centered column positioned near the top */
+@media (min-width: 1024px) {
+  #section2 {
+    align-items: flex-start; /* push content toward top */
+    padding-top: 12vh; /* space from the top */
+  }
+
+  #section2 .section-inner {
+    grid-template-columns: 1fr; /* single column */
+    justify-items: center; /* center horizontally */
+    align-items: start;
+    gap: 1rem;
+  }
+
+  #section2 .col-left,
+  #section2 .col-right {
+    width: 100%;
+    text-align: center; /* center text */
+  }
+}
 
 /* Hide the native scrollbar only when Lenis is active (applied via JS) */
 html.lenis-active, body.lenis-active { overflow: hidden; }
@@ -224,6 +251,8 @@ body.js #section1 .col-left { opacity: 0; transform: translateY(20px); }
 
 /* Section 2 pinning / show styles removed; content will use default section layout and animations */
 
+/* No JS-driven reveal for section 2; content is static and non-animated */
+
 /* Typography rules requested by user */
 /* All h2 headings use Bebas Neue (display font) */
 h1,
@@ -238,4 +267,77 @@ p,
   font-family: "Alumni Sans Pinstripe", system-ui, -apple-system, "Segoe UI",
     Roboto, Arial;
   font-weight: 600;
+}
+
+/* Ticker removed for section 2 — paragraph uses plain text */
+
+/* Ticker styles for section 2 paragraph (re-added) */
+.ticker {
+  overflow: hidden;
+  display: block;
+  /* constrain ticker to a reasonable width, not full page */
+  max-width: 60ch;
+  width: min(80%, 880px);
+  margin: 0.5rem auto;
+}
+.ticker-track {
+  display: inline-flex;
+  white-space: nowrap;
+  will-change: transform;
+}
+.ticker-item {
+  display: inline-block;
+  padding-right: 3rem; /* gap between repeats */
+}
+
+/* default animation placeholder: duration is set inline via style from JS */
+@keyframes ticker-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* Technology logos: single horizontal row, smaller icons */
+.tech-logos {
+  display: flex;
+  flex-direction: row;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.9rem;
+  width: 100%;
+  /* allow horizontal scrolling if viewport too narrow so the row never wraps */
+  overflow-x: auto;
+  padding: 0.25rem 0.5rem;
+}
+.tech-logos::-webkit-scrollbar { height: 8px; }
+.tech-logos::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.08); border-radius: 999px; }
+.tech-item {
+  flex: 0 0 auto; /* don't shrink/expand */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  padding: 6px;
+  background: transparent;
+  border-radius: 8px;
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+.tech-item img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  display: block;
+}
+.tech-item:hover { transform: translateY(-3px) scale(1.04); box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
+
+/* Slightly reduce further on very small screens */
+@media (max-width: 420px) {
+  .tech-item { width: 48px; height: 48px; }
+  .tech-item img { width: 22px; height: 22px; }
+}
+
+/* Provide subtle brightness boost on dark schemes */
+@media (prefers-color-scheme: dark) {
+  .tech-item img { filter: brightness(1.15); }
 }
