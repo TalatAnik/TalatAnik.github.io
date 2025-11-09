@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scroll Scale & Detach Demo</title>
+    <style>
+        html,
+        body {
+            margin: 0;
+            height: 400vh;
+            /* plenty of scroll space */
+            overflow-x: hidden;
+            font-family: sans-serif;
+        }
+
+        #box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 100vw;
+            height: 100vh;
+            background: #777;
+            transform: translate(-50%, -50%) scale(1);
+            transform-origin: center;
+            transition: transform 0.1s linear;
+            z-index: 10;
+        }
+
+        section {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            background: transparent;
+            color: white;
+            text-shadow: 1px 1px 3px black;
+        }
+
+        /* for visual clarity */
+        section:nth-of-type(1) {
+            background: #222;
+        }
+
+        section:nth-of-type(2) {
+            background: #333;
+        }
+
+        section:nth-of-type(3) {
+            background: #444;
+        }
+
+        section:nth-of-type(4) {
+            background: #555;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="box"></div>
+    <section>Section 1</section>
+    <section>Section 2 — Scaling starts here</section>
+    <section>Section 3 — Scaling ends here</section>
+    <section>Section 4 — Box detaches & scrolls away</section>
+
+    <script>
+        const box = document.getElementById('box');
+        const start = window.innerHeight;       // start scaling after Section 1
+        const end = window.innerHeight * 2;     // finish scaling by Section 3
+        const detachStart = end;                // detachment begins after scaling
+        const detachEnd = window.innerHeight * 3; // done by Section 4
+
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            let scale = 1;
+            let translateY = -50; // centered
+
+            if (scrollY > start && scrollY < end) {
+                // scaling phase
+                const progress = (scrollY - start) / (end - start);
+                scale = 1 - 0.8 * progress; // 1 → 0.2
+            } else if (scrollY >= end) {
+                scale = 0.2;
+            }
+
+            if (scrollY > detachStart && scrollY < detachEnd) {
+                // detaching upward with scroll
+                const progress = (scrollY - detachStart) / (detachEnd - detachStart);
+                translateY = -50 - progress * 150; // moves up offscreen gradually
+            } else if (scrollY >= detachEnd) {
+                translateY = -200;
+            }
+
+            box.style.transform = `translate(-50%, ${translateY}%) scale(${scale})`;
+        });
+    </script>
+</body>
+
+</html>

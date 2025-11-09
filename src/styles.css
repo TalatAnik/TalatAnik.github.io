@@ -1,0 +1,39 @@
+/* Basic reset */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; overflow-x: hidden; }
+
+/* Canvas (acts like the demo 'box') */
+#canvas {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 100vw;
+  height: 100vh;
+  transform: translate(-50%, -50%) scale(1);
+  transform-origin: center center;
+  background: rgba(255, 230, 130, 0.9); /* pleasant pale yellow */
+  z-index: 0;
+}
+
+/* Sections - five full-viewport sections */
+.section {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #111;
+  font-size: clamp(1.25rem, 2.5vw, 2rem);
+  z-index: 2; /* above canvas */
+  position: relative;
+}
+
+/* make sections transparent so the canvas background shows through */
+.section { background: transparent; color: #111; }
+
+/* Simple content wrapper */
+.container { max-width: 960px; padding: 2rem; text-align: center; }
+
+/* small helper to make messages visible over canvas */
+.section h1, .section h2 { margin-bottom: 0.5rem; }
+.section p { opacity: 0.9; }
