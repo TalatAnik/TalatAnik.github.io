@@ -40,6 +40,12 @@ if (!canvas) {
     autoRaf: true,
     smooth: true,
     duration: 1.2,
+    // Enable syncTouch so Lenis will handle touch gestures even though we
+    // hide native overflow (html.lenis-active). Without this, touch gestures
+    // fall through to native scrolling which is disabled and causes touch to
+    // appear broken on mobile.
+    syncTouch: true,
+    touchMultiplier: 1,
     easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))
   });
 
@@ -405,6 +411,19 @@ if (!canvas) {
   // initial update
   lastY = lenis.scroll || 0;
   update();
+
+  // Defensive clamp: on some mobile browsers or in transformed scroll wrappers
+  // horizontal drift (non-zero scrollX) can occur and push the page content
+  // out of the viewport. Keep horizontal scroll pinned to 0 using a rAF loop.
+  // This is minimally invasive and avoids janky layout while we animate the
+  // canvas. It simply resets any accidental horizontal scroll immediately.
+  (function clampHorizontalScroll() {
+    if (window.scrollX && window.scrollX !== 0) {
+      // preserve vertical scroll but snap horizontal to 0
+      window.scrollTo({ left: 0, top: window.scrollY });
+    }
+    requestAnimationFrame(clampHorizontalScroll);
+  })();
 }
 
 // Ticker setup for section 2 paragraph (re-added)
