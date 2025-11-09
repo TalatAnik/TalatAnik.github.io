@@ -61,6 +61,24 @@ h1, h2, h3, h4, h5, h6, p { display: block; width: 100%; }
   h1 { font-size: 6.25rem; line-height: 1.05; }
   h2 { font-size: 5.25rem; }
   .section { font-size: clamp(1.25rem, 2.2vw, 1.25rem); }
+  /* Slightly larger paragraph text on desktop for better readability */
+  p, .section p { font-size: 2.125rem; line-height: 1.5; }
+}
+
+/* Section 2: make it a single-column layout on desktop and position content near the top */
+@media (min-width: 1024px) {
+  #section2 {
+    align-items: flex-start; /* place inner content near top of viewport */
+    padding-top: 6vh;
+  }
+  #section2 .section-inner {
+    grid-template-columns: 1fr; /* collapse to a single column */
+    align-items: start;
+    justify-items: center; /* center horizontally within the container */
+    gap: 1.5rem;
+  }
+  /* center text horizontally on desktop for section 2 while keeping it near the top */
+  #section2 .col-left, #section2 .col-right { text-align: center; width: 100%; }
 }
 
 /* Hide the native scrollbar only when Lenis is active (applied via JS) */
@@ -114,6 +132,66 @@ html.lenis-active, body.lenis-active { scrollbar-width: none; -ms-overflow-style
   box-shadow: 0 0 0 1px rgba(0,0,0,0.12) inset, 0 6px 18px rgba(0,0,0,0.18);
 }
 
+/* Custom inverted cursor */
+/* Hide native cursor on precision pointers, but keep it for form controls and on touch devices */
+@media (pointer: fine) {
+  html, body { cursor: none; }
+  /* keep native cursor for focusable form elements */
+  input, textarea, select, button, a { cursor: auto; }
+}
+
+.custom-cursor {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(1);
+  transition: transform 0.12s linear, opacity 160ms linear, background-color 120ms linear, box-shadow 120ms linear;
+  /* put the cursor as high as possible in the stacking order to ensure it sits
+     above any transformed stacking contexts created by animated content */
+  z-index: 2147483647; /* max 32-bit signed int */
+  will-change: transform, opacity, background-color;
+  /* create its own composite layer to improve blending consistency */
+  transform: translate(-50%, -50%) translateZ(0);
+  backface-visibility: hidden;
+  /* Use mix-blend-mode to visually invert whatever is beneath the cursor.
+    White background with difference blending will produce an inverted circle.
+    Make sure the element is fully opaque (opacity: 1) and the background is
+    a solid color (no alpha). If the element is partially transparent the
+    difference blend can be muted and appear not to invert on white. */
+  background: #ffffff; /* fully opaque white */
+  mix-blend-mode: difference;
+  /* keep a subtle shadow to help the circle read on flat backgrounds */
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  opacity: 1;
+}
+
+/* Prefer backdrop-filter inversion when available: it's more robust because it
+   directly inverts the pixels behind the element (works well with text and
+   complex stacking contexts). We keep mix-blend-mode as a fallback. */
+@supports ((-webkit-backdrop-filter: invert(1)) or (backdrop-filter: invert(1))) {
+  .custom-cursor {
+    /* tiny alpha so the backdrop-filter paints through; fully transparent
+       backgrounds may not trigger the filter in some browsers */
+    background: rgba(255,255,255,0.02);
+    -webkit-backdrop-filter: invert(1);
+    backdrop-filter: invert(1);
+    /* disable mix-blend fallback when using backdrop-filter to avoid double effects */
+    mix-blend-mode: normal;
+    /* a subtle shadow helps reading inverted areas */
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+}
+
+.custom-cursor.hidden { opacity: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .custom-cursor { transition: none; }
+}
+
 /* Respect users who prefer reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .custom-scrollbar .thumb { transition: none; }
@@ -148,6 +226,32 @@ body.js #section1 .col-left { opacity: 0; transform: translateY(20px); }
 }
 .section p {
   opacity: 0.9;
+}
+
+/* Word-level split animation helpers */
+.word {
+  display: inline-block;
+  transform: translateY(18px);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+/* Section 2 content show / pin styles */
+.section2-content {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: transform 0.5s cubic-bezier(.2,.9,.2,1), opacity 0.45s ease;
+  width: 100%;
+  max-width: 1400px;
+}
+.section2-content.visible { opacity: 1; transform: translateY(0); }
+.section2-content.pinned {
+  position: fixed;
+  top: 6vh; /* near top as requested */
+  left: 50%;
+  transform: translateX(-50%) translateY(0);
+  z-index: 50;
+  width: min(1400px, 92%);
 }
 
 /* Typography rules requested by user */

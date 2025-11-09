@@ -37,6 +37,86 @@ if (!canvas) {
   scrollbar.appendChild(thumb);
   document.body.appendChild(scrollbar);
 
+  // --- Custom inverted cursor ---
+  const isCoarse = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+  let customCursor = null;
+  if (!isCoarse) {
+    customCursor = document.createElement('div');
+    customCursor.className = 'custom-cursor hidden';
+    document.body.appendChild(customCursor);
+  }
+
+  // Cursor movement smoothing
+  let cursorX = 0, cursorY = 0, targetX = 0, targetY = 0;
+  let cursorVisible = false;
+  // note: color sampling removed in favor of CSS mix-blend-mode; JS only handles movement/show/hide
+
+  function showCursor() {
+    if (!customCursor) return;
+    customCursor.classList.remove('hidden');
+    cursorVisible = true;
+  }
+  function hideCursor() {
+    if (!customCursor) return;
+    customCursor.classList.add('hidden');
+    cursorVisible = false;
+  }
+
+  // Simple shrink-on-speed behavior (no squash/stretch):
+  const BASE_CURSOR_SCALE = 1.2; // stationary size (slightly larger)
+  let currentScale = BASE_CURSOR_SCALE;
+  let targetScale = BASE_CURSOR_SCALE;
+  let lastTargetPos = { x: 0, y: 0 };
+
+  function rafCursor() {
+    const lerp = 0.48; // snappy follow
+    const dx = targetX - cursorX;
+    const dy = targetY - cursorY;
+
+    cursorX += dx * lerp;
+    cursorY += dy * lerp;
+
+    // smooth the scale towards targetScale
+    currentScale += (targetScale - currentScale) * 0.22;
+
+    if (customCursor) {
+      customCursor.style.transform = `translate(${cursorX}px, ${cursorY}px) translate(-50%, -50%) translateZ(0) scale(${currentScale})`;
+    }
+
+    requestAnimationFrame(rafCursor);
+  }
+  requestAnimationFrame(rafCursor);
+
+  // Pointer move updates target coords and shows cursor. Also trigger immediate color update (throttled).
+  if (customCursor) {
+    let lastPointerUpdate = 0;
+    function updateCursorFromEvent(e) {
+      targetX = e.clientX;
+      targetY = e.clientY;
+      showCursor();
+
+      // compute instantaneous movement of pointer targets (since RAF is moving cursor toward target)
+      const vx = e.clientX - lastTargetPos.x;
+      const vy = e.clientY - lastTargetPos.y;
+      lastTargetPos.x = e.clientX;
+      lastTargetPos.y = e.clientY;
+
+      const speed = Math.sqrt(vx * vx + vy * vy);
+
+      // map speed to a shrink factor: faster motion => smaller cursor
+      // tune: base 1.2 -> min 0.7. speed multiplier chosen to feel responsive.
+      const newScale = Math.max(0.7, BASE_CURSOR_SCALE - Math.min(0.5, speed * 0.02));
+      targetScale = newScale;
+    }
+    window.addEventListener('pointermove', updateCursorFromEvent, { passive: true });
+    // hide on blur / leave
+    window.addEventListener('pointerleave', () => { if (customCursor) hideCursor(); });
+    window.addEventListener('pointerdown', () => { if (customCursor) customCursor.classList.add('active'); });
+    window.addEventListener('pointerup', () => { if (customCursor) customCursor.classList.remove('active'); });
+  }
+
+  // color-sampling removed: CSS handles inversion using mix-blend-mode: difference
+
   function updateCustomScrollbar() {
     // lenis.limit is the maximum scroll value (documentHeight - viewportHeight)
     const limit = lenis.limit || 0;
@@ -297,10 +377,95 @@ if (!canvas) {
   update();
 }
 
-// Entrance animation for section 1 left column
+// Entrance animation for section 1 left column and rotating paragraph sentences
 window.addEventListener('DOMContentLoaded', () => {
   const target = document.querySelector('#section1 .col-left');
-  if (target) {
-    gsap.to(target, { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out', delay: 0.15 });
+  if (!target) return;
+
+  // Split non-paragraph nodes into words (we handle paragraph separately for rotation)
+  const splitSelectors = 'h1,h2,h3,span';
+  const nodes = Array.from(target.querySelectorAll(splitSelectors));
+
+  nodes.forEach((node) => {
+    // skip if node already contains .word spans
+    if (node.querySelector('.word')) return;
+    const text = node.textContent.trim();
+    if (!text) return;
+
+    const parts = text.split(/(\s+)/);
+    const html = parts.map(part => {
+      if (/^\s+$/.test(part)) return part; // preserve whitespace
+      return `<span class="word">${part}</span>`;
+    }).join('');
+    node.innerHTML = html;
+  });
+
+  // Animate non-paragraph words in with a slight stagger after a short delay
+  const words = target.querySelectorAll(':scope > h1 .word, :scope > h2 .word, :scope > h3 .word, :scope > span .word');
+  if (words.length) {
+    gsap.to(words, {
+      y: 0,
+      opacity: 1,
+      duration: 0.6,
+      ease: 'power3.out',
+      stagger: 0.06,
+      delay: 0.28
+    });
+  }
+
+  // Rotating paragraph sentences for the first section
+  const p = target.querySelector('p');
+  if (p) {
+    const sentences = [
+      'I make websites that look like they know a secret.',
+      'I specialise in tasteful chaos and caffeinated scripts.',
+      'Design by day, ridiculous prototypes by night.',
+      'I build things that politely steal attention.'
+    ];
+
+    let idx = 0;
+
+    function renderSentence(i, instant = false) {
+      const text = sentences[i];
+      const parts = text.split(/(\s+)/);
+      const html = parts.map(part => {
+        if (/^\s+$/.test(part)) return part;
+        return `<span class="word">${part}</span>`;
+      }).join('');
+      p.innerHTML = html;
+
+      const w = p.querySelectorAll('.word');
+      if (w.length) {
+        gsap.fromTo(w, { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out', stagger: 0.06, delay: instant ? 0 : 0.12 });
+      }
+    }
+
+    // initial render (slightly delayed so the page feels composed first)
+    setTimeout(() => renderSentence(0, true), 320);
+
+    // cycle every ~4s: animate out words, then swap and animate in
+    const cycle = () => {
+      const currentWords = p.querySelectorAll('.word');
+      if (currentWords.length) {
+        gsap.to(currentWords, {
+          y: -10,
+          opacity: 0,
+          duration: 0.28,
+          ease: 'power1.in',
+          stagger: 0.02,
+          onComplete: () => {
+            idx = (idx + 1) % sentences.length;
+            renderSentence(idx);
+          }
+        });
+      } else {
+        idx = (idx + 1) % sentences.length;
+        renderSentence(idx);
+      }
+    };
+
+    const interval = setInterval(cycle, 4000);
+    // store interval on element so it can be cleared if needed later
+    p.__rotateInterval = interval;
   }
 });
