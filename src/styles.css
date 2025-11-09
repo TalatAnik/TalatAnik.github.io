@@ -65,21 +65,7 @@ h1, h2, h3, h4, h5, h6, p { display: block; width: 100%; }
   p, .section p { font-size: 2.125rem; line-height: 1.5; }
 }
 
-/* Section 2: make it a single-column layout on desktop and position content near the top */
-@media (min-width: 1024px) {
-  #section2 {
-    align-items: flex-start; /* place inner content near top of viewport */
-    padding-top: 6vh;
-  }
-  #section2 .section-inner {
-    grid-template-columns: 1fr; /* collapse to a single column */
-    align-items: start;
-    justify-items: center; /* center horizontally within the container */
-    gap: 1.5rem;
-  }
-  /* center text horizontally on desktop for section 2 while keeping it near the top */
-  #section2 .col-left, #section2 .col-right { text-align: center; width: 100%; }
-}
+/* (section 2 desktop overrides removed — section2 content will use the default section layout) */
 
 /* Hide the native scrollbar only when Lenis is active (applied via JS) */
 html.lenis-active, body.lenis-active { overflow: hidden; }
@@ -236,23 +222,7 @@ body.js #section1 .col-left { opacity: 0; transform: translateY(20px); }
   will-change: transform, opacity;
 }
 
-/* Section 2 content show / pin styles */
-.section2-content {
-  opacity: 0;
-  transform: translateY(24px);
-  transition: transform 0.5s cubic-bezier(.2,.9,.2,1), opacity 0.45s ease;
-  width: 100%;
-  max-width: 1400px;
-}
-.section2-content.visible { opacity: 1; transform: translateY(0); }
-.section2-content.pinned {
-  position: fixed;
-  top: 6vh; /* near top as requested */
-  left: 50%;
-  transform: translateX(-50%) translateY(0);
-  z-index: 50;
-  width: min(1400px, 92%);
-}
+/* Section 2 pinning / show styles removed; content will use default section layout and animations */
 
 /* Typography rules requested by user */
 /* All h2 headings use Bebas Neue (display font) */

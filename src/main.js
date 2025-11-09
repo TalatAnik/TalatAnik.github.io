@@ -271,6 +271,8 @@ if (!canvas) {
     updateCustomScrollbar();
   });
 
+  // (Section 2 special behavior removed — section 2 uses default centered layout and no pinning.)
+
   // Initial update
   updateCustomScrollbar();
 
