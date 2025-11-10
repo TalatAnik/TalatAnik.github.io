@@ -36,7 +36,7 @@ h1, h2, h3, h4, h5, h6, p { display: block; width: 100%; }
   transform: translateZ(0) scale(1);
   transform-origin: center center;
   background: rgba(255, 230, 130, 0.9); /* pleasant pale yellow */
-  z-index: 0;
+  z-index: 2; /* midground */
 }
 
 /* Sections - five full-viewport sections */
@@ -47,15 +47,15 @@ h1, h2, h3, h4, h5, h6, p { display: block; width: 100%; }
   justify-content: center;
   color: #111;
   font-size: clamp(1.25rem, 2.5vw, 2rem);
-  z-index: 2; /* above canvas */
+  z-index: 3; /* foreground */
   position: relative;
   border: 1px solid rgba(0, 0, 0, 0.95);
 }
 
-/* make sections transparent so the canvas background shows through */
-.section {
-  background: transparent;
-  color: #111;
+/* Section 3 sits behind canvas and other sections */
+#section3 {
+  z-index: 1; /* background layer */
+  
 }
 
 /* Simple content wrapper */
@@ -370,4 +370,9 @@ p,
 /* Letter animation for section 2 h2 */
 .letter {
   display: inline-block;
+}
+
+
+section3 {
+  z-index: -1;
 }

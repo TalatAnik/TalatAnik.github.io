@@ -613,19 +613,29 @@ window.addEventListener('DOMContentLoaded', () => {
       .to(icons, { x: 0, opacity: 1, duration: 0.2, stagger: 0.05, ease: 'power2.out' }, '+=0.1'); // slight delay after h2
   }
 
-  // Canvas scale animation based on section 3
-  const section3 = document.getElementById('section3');
+  // Canvas scale animation and section 3 pinning until scaling completes
   if (section2 && section3 && canvas) {
     ScrollTrigger.create({
       trigger: section2,
       start: 'bottom top', // when bottom of section 2 reaches top of viewport
       endTrigger: section3,
       end: 'bottom top', // when bottom of section 3 reaches top of viewport
-      pin: section3, // pin section 3 content during scaling
+      pin: section3, // pin section 3 during scaling
       scrub: true,
       onUpdate: (self) => {
         const scale = 1 - self.progress * 0.3; // scale from 1 to 0.7 (zoom out)
         canvas.style.transform = `scale(${scale})`;
+      },
+      onLeave: () => {
+        // When scaling completes, make both canvas and section 3 scroll normally
+        canvas.style.position = 'absolute';
+        canvas.style.top = `${window.scrollY}px`;
+        // Section 3 will automatically unpin and scroll normally
+      },
+      onEnterBack: () => {
+        // When scrolling back up, make canvas fixed again and restart scaling
+        canvas.style.position = 'fixed';
+        canvas.style.top = '0px';
       }
     });
   }
