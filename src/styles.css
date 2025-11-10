@@ -89,15 +89,18 @@ h1, h2, h3, h4, h5, h6, p { display: block; width: 100%; }
 
   #section2 .section-inner {
     grid-template-columns: 1fr; /* single column */
+    grid-template-rows: 1fr 1fr; /* two equal height rows */
     justify-items: center; /* center horizontally */
-    align-items: start;
-    gap: 1rem;
+    align-items: stretch; /* stretch items to fill row height */
+    gap: 0; /* no gap between rows */
+    overflow: visible; /* allow ticker animation to overflow */
   }
 
   #section2 .col-left,
   #section2 .col-right {
     width: 100%;
     text-align: center; /* center text */
+    min-height: 50vh; /* ensure each takes at least 50% viewport height */
   }
 }
 
@@ -237,6 +240,12 @@ body.js #section1 .col-left { opacity: 0; transform: translateY(20px); }
   .container { padding: 1.25rem; }
   /* center text on mobile for a nicer stacked look */
   .col-left, .col-right { text-align: center; }
+  /* Reduce top padding for section 2 on mobile to sit higher */
+  #section2 { padding-top: 6vh; }
+  /* Add side padding for ticker and icons in section 2 */
+  #section2 .col-left, #section2 .col-right { padding: 0 1rem; }
+  /* Make icons stack in rows on mobile */
+  .tech-logos { flex-wrap: wrap; }
 }
 
 /* small helper to make messages visible over canvas */
@@ -287,6 +296,14 @@ p,
   width: min(80%, 880px);
   margin: 0.5rem auto;
 }
+
+/* On mobile, make ticker 80% of viewport width */
+@media (max-width: 768px) {
+  .ticker {
+    width: 80vw;
+    max-width: none;
+  }
+}
 .ticker-track {
   display: inline-flex;
   white-space: nowrap;
@@ -312,12 +329,10 @@ p,
   justify-content: center;
   margin-top: 0.9rem;
   width: 100%;
-  /* allow horizontal scrolling if viewport too narrow so the row never wraps */
-  overflow-x: auto;
+  /* hide overflow to prevent scroll bars during animation */
+  overflow: hidden;
   padding: 0.25rem 0.5rem;
 }
-.tech-logos::-webkit-scrollbar { height: 8px; }
-.tech-logos::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.08); border-radius: 999px; }
 .tech-item {
   flex: 0 0 auto; /* don't shrink/expand */
   display: inline-flex;
@@ -347,4 +362,9 @@ p,
 /* Provide subtle brightness boost on dark schemes */
 @media (prefers-color-scheme: dark) {
   .tech-item img { filter: brightness(1.15); }
+}
+
+/* Letter animation for section 2 h2 */
+.letter {
+  display: inline-block;
 }

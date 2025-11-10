@@ -1,7 +1,11 @@
 import './styles.css';
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
 import 'lenis/dist/lenis.css';
+
+// Register ScrollTrigger
+gsap.registerPlugin(ScrollTrigger);
 
 // Add a JS marker class so we only apply JS-only styles when scripts run.
 document.documentElement.classList.add('js');
@@ -251,7 +255,7 @@ if (!canvas) {
             finalR = Math.round(invR * (1 - blendFactor));
             finalG = Math.round(invG * (1 - blendFactor));
             finalB = Math.round(invB * (1 - blendFactor));
-            borderColor = 'rgba(255,255,255,0.06)';
+            borderColor = 'rgba(255, 255, 255, 0.22)';
           }
         }
 
@@ -428,7 +432,7 @@ if (!canvas) {
 
 // Ticker setup for section 2 paragraph (re-added)
 function setupSection2Ticker() {
-  const p = document.querySelector('#section2 .col-right p');
+  const p = document.querySelector('#section2 .col-left p');
   if (!p) return;
 
   // Respect reduced motion: don't create the animated ticker
@@ -578,5 +582,33 @@ window.addEventListener('DOMContentLoaded', () => {
     setupSection2Ticker();
   } catch (e) {
     console.warn('Section 2 ticker failed to initialize', e);
+  }
+
+  // Section 2 h2 animation
+  const section2 = document.getElementById('section2');
+  const h2 = section2 ? section2.querySelector('.col-left h2') : null;
+  const icons = document.querySelectorAll('.tech-item');
+  const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (!prefersReducedMotion && h2 && icons.length) {
+    const text = h2.textContent.trim();
+    h2.innerHTML = text.split('').map(letter => `<span class="letter">${letter}</span>`).join('');
+    const letters = h2.querySelectorAll('.letter');
+
+    // Set initial states
+    gsap.set(letters, { y: 20, opacity: 0 });
+    gsap.set(icons, { x: -20, opacity: 0 });
+
+    // Create timeline for sequenced animations
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: section2,
+        start: 'top 400px',
+        toggleActions: 'play none none reverse'
+      }
+    });
+
+    tl.to(letters, { y: 0, opacity: 1, duration: 0.6, stagger: 0.05, ease: 'power2.out' })
+      .to(icons, { x: 0, opacity: 1, duration: 0.6, stagger: 0.1, ease: 'power2.out' }, '+=0.1'); // slight delay after h2
   }
 });
