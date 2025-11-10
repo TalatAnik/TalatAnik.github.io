@@ -388,13 +388,13 @@ if (!canvas) {
     }
 
     // Tween to the new target values smoothly; animate `y` in pixels
-    gsap.to(canvas, {
-      scale: targetScale,
-      y: targetTranslateY,
-      duration: 0.6,
-      ease: 'power3.out',
-      overwrite: true
-    });
+    // gsap.to(canvas, {
+    //   scale: targetScale,
+    //   y: targetTranslateY,
+    //   duration: 0.6,
+    //   ease: 'power3.out',
+    //   overwrite: true
+    // });
   }
 
   // Update lastY from Lenis scroll event
@@ -584,8 +584,9 @@ window.addEventListener('DOMContentLoaded', () => {
     console.warn('Section 2 ticker failed to initialize', e);
   }
 
-  // Section 2 h2 animation
   const section2 = document.getElementById('section2');
+
+  // Section 2 h2 animation
   const h2 = section2 ? section2.querySelector('.col-left h2') : null;
   const icons = document.querySelectorAll('.tech-item');
   const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -608,7 +609,24 @@ window.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    tl.to(letters, { y: 0, opacity: 1, duration: 0.6, stagger: 0.05, ease: 'power2.out' })
-      .to(icons, { x: 0, opacity: 1, duration: 0.6, stagger: 0.1, ease: 'power2.out' }, '+=0.1'); // slight delay after h2
+    tl.to(letters, { y: 0, opacity: 1, duration: 0.2, stagger: 0.05, ease: 'power2.out' })
+      .to(icons, { x: 0, opacity: 1, duration: 0.2, stagger: 0.05, ease: 'power2.out' }, '+=0.1'); // slight delay after h2
+  }
+
+  // Canvas scale animation based on section 3
+  const section3 = document.getElementById('section3');
+  if (section2 && section3 && canvas) {
+    ScrollTrigger.create({
+      trigger: section2,
+      start: 'bottom top', // when bottom of section 2 reaches top of viewport
+      endTrigger: section3,
+      end: 'bottom top', // when bottom of section 3 reaches top of viewport
+      pin: section3, // pin section 3 content during scaling
+      scrub: true,
+      onUpdate: (self) => {
+        const scale = 1 - self.progress * 0.3; // scale from 1 to 0.7 (zoom out)
+        canvas.style.transform = `scale(${scale})`;
+      }
+    });
   }
 });
