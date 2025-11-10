@@ -614,6 +614,7 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   // Canvas scale animation and section 3 pinning until scaling completes
+  const section3 = document.getElementById('section3');
   if (section2 && section3 && canvas) {
     ScrollTrigger.create({
       trigger: section2,
@@ -623,7 +624,9 @@ window.addEventListener('DOMContentLoaded', () => {
       pin: section3, // pin section 3 during scaling
       scrub: true,
       onUpdate: (self) => {
-        const scale = 1 - self.progress * 0.3; // scale from 1 to 0.7 (zoom out)
+        // Ease-out: scaling accelerates as it shrinks
+        const easedProgress = 1 - Math.pow(1 - self.progress, 3); // cubic ease-out
+        const scale = 1 - easedProgress * 0.7; // scale from 1.0 to 0.3
         canvas.style.transform = `scale(${scale})`;
       },
       onLeave: () => {
