@@ -432,7 +432,7 @@ if (!canvas) {
 
 // Ticker setup for section 2 paragraph (re-added)
 function setupSection2Ticker() {
-  const p = document.querySelector('#section2 .col-left p');
+  const p = document.querySelector('#section2 .col-right p');
   if (!p) return;
 
   // Respect reduced motion: don't create the animated ticker
@@ -587,7 +587,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const section2 = document.getElementById('section2');
 
   // Section 2 h2 animation
-  const h2 = section2 ? section2.querySelector('.col-left h2') : null;
+  const h2 = section2 ? section2.querySelector('.col-right h2') : null;
   const icons = document.querySelectorAll('.tech-item');
   const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -604,7 +604,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: section2,
-        start: 'top 400px',
+        start: 'top 10%',
         toggleActions: 'play none none reverse'
       }
     });

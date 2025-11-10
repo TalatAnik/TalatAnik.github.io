@@ -49,6 +49,7 @@ h1, h2, h3, h4, h5, h6, p { display: block; width: 100%; }
   font-size: clamp(1.25rem, 2.5vw, 2rem);
   z-index: 2; /* above canvas */
   position: relative;
+  border: 1px solid rgba(0, 0, 0, 0.95);
 }
 
 /* make sections transparent so the canvas background shows through */
@@ -75,7 +76,7 @@ h1, h2, h3, h4, h5, h6, p { display: block; width: 100%; }
 
   /* Increase minimum height of section1 and section2 on desktop so their content
      doesn't overlap while scrolling between them. Tweak 110vh as needed. */
-  #section2 { min-height: 140vh; }
+  
 }
 
 /* (section 2 desktop overrides removed — section2 content will use the default section layout) */
@@ -244,6 +245,8 @@ body.js #section1 .col-left { opacity: 0; transform: translateY(20px); }
   #section2 { padding-top: 6vh; }
   /* Add side padding for ticker and icons in section 2 */
   #section2 .col-left, #section2 .col-right { padding: 0 1rem; }
+  /* Force minimum height for left column in section 2 on mobile */
+  #section2 .col-left { min-height: 40vh; }
   /* Make icons stack in rows on mobile */
   .tech-logos { flex-wrap: wrap; }
 }
