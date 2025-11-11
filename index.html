@@ -8,6 +8,61 @@
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Alumni+Sans+Pinstripe&display=swap" rel="stylesheet">
 </head>
 <body>
+  <!-- Full Screen Loader -->
+  <div class="page-loader">
+    <div class="loader-content">
+      <div class="loader-name">
+        <span class="loader-first">Talat</span>
+        <span class="loader-last">Anik</span>
+      </div>
+      <div class="loader-bar-container">
+        <div class="loader-bar"></div>
+      </div>
+      <div class="loader-progress">0%</div>
+    </div>
+  </div>
+
+  <!-- Top Navigation -->
+  <nav class="top-nav">
+    <div class="nav-logo">
+      <span class="logo-first">Talat</span>
+      <span class="logo-last">Anik</span>
+    </div>
+    <button class="hamburger-menu" aria-label="Menu">
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect class="hamburger-line line-1" x="6" y="10" width="20" height="2" rx="1" fill="currentColor"/>
+        <rect class="hamburger-line line-2" x="6" y="15" width="20" height="2" rx="1" fill="currentColor"/>
+        <rect class="hamburger-line line-3" x="6" y="20" width="20" height="2" rx="1" fill="currentColor"/>
+      </svg>
+    </button>
+  </nav>
+
+  <!-- Side Menu Panel -->
+  <div class="menu-panel">
+    <button class="menu-close" aria-label="Close menu">
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <line x1="8" y1="8" x2="24" y2="24" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <line x1="24" y1="8" x2="8" y2="24" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+    <nav class="menu-nav">
+      <a href="#section1" class="menu-item">Home</a>
+      <a href="#section2" class="menu-item">Frontend Skills</a>
+      <a href="#section3" class="menu-item">Backend Skills</a>
+      <a href="#section4" class="menu-item">Projects</a>
+      <a href="#section5" class="menu-item">Contact</a>
+    </nav>
+  </div>
+  <div class="menu-overlay"></div>
+
+  <!-- Work in Progress Banner -->
+  <div class="wip-banner">
+    <div class="wip-banner-track">
+      <span class="wip-banner-item">🚧 This portfolio is a work in progress 🚧</span>
+      <span class="wip-banner-item">🚧 This portfolio is a work in progress 🚧</span>
+    </div>
+  </div>
+
   <!-- Canvas Background -->
   <canvas id="canvas"></canvas>
 
@@ -15,7 +70,8 @@
   <section class="section" id="section1">
     <div class="section-inner container">
       <div class="col-left">
-        <h1>Welcome to my portfolio</h1>
+        <h1>Hi, I am Talat Anik</h1>
+        <h2>I am a <span class="rotating-role"> Generalist</span></h2>
         <p>I turn coffee into code and bugs into features.</p>
       </div>
       <div class="col-right">
@@ -26,11 +82,8 @@
 
   <!-- Section 2 -->
   <section class="section" id="section2">
-    <div class="section-inner container">
-      <div class="col-left">
-        <!-- empty div for top spacing -->
-      </div>
-      <div class="col-right">
+    <div class="section-inner container section2-centered">
+      <div class="section2-content">
         <h2>Frontend  Skills</h2>
         <p>Modern JavaScript, Next.js, TypeScript, HTML5, CSS3, Tailwind CSS, Bootstrap, Framer Motion, Zustand, Redux Toolkit,
         Vite, REST APIs, Axios, React Query, Material UI, and modern responsive design practices.</p>
@@ -57,12 +110,17 @@
 
   <!-- Section 3 -->
   <section class="section" id="section3">
-    <div class="section-inner container">
-      <div class="col-left">
+    <div class="section-inner container section3-stack">
+      <div class="section3-box">
         <h2>Backend Skills</h2>
-      </div>
-      <div class="col-right">
         <p>Node.js, databases, cloud infrastructure, and APIs.</p>
+      </div>
+      <div class="section3-box section3-empty">
+        <!-- Empty middle box for scaled canvas -->
+      </div>
+      <div class="section3-box">
+        <h2>Server-Side Sorcery</h2>
+        <p>Building robust APIs, taming databases, and deploying cloud infrastructure that doesn't crash at 3 AM.</p>
       </div>
     </div>
   </section>
@@ -74,7 +132,7 @@
         <h2>Projects</h2>
       </div>
       <div class="col-right">
-        <p>Showcasing creative and technical work.</p>
+        <p>Currently having an existential crisis trying to pick my favorite projects. Like choosing between your children, but with more Git commits. Check back soon!</p>
       </div>
     </div>
   </section>
@@ -86,7 +144,11 @@
         <h2>Get In Touch</h2>
       </div>
       <div class="col-right">
-        <p>Let's build something amazing together.</p>
+        <p>I promise to respond faster than my code compiles. Probably.</p>
+        <p>
+          <a href="mailto:talat_anik@outlook.com">talat_anik@outlook.com</a><br>
+          <a href="https://github.com/TalatAnik" target="_blank" rel="noopener noreferrer">github.com/TalatAnik</a>
+        </p>
       </div>
     </div>
   </section>

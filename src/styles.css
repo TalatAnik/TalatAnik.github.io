@@ -24,6 +24,325 @@ body {
 /* Ensure all headings and paragraphs are block-level so they stack vertically */
 h1, h2, h3, h4, h5, h6, p { display: block; width: 100%; }
 
+/* Full Screen Loader */
+.page-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99999;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.page-loader.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.loader-content {
+  text-align: center;
+}
+
+.loader-name {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+  font-family: "Bebas Neue", system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  color: #000;
+  margin-bottom: 2rem;
+  animation: fadeInScale 0.8s ease-out;
+}
+
+.loader-first {
+  font-size: clamp(3rem, 10vw, 6rem);
+  font-weight: 300;
+  text-align: center;
+  width: 100%;
+}
+
+.loader-last {
+  font-size: clamp(4.5rem, 15vw, 9rem);
+  font-weight: 700;
+  margin-top: -0.5rem;
+  text-align: center;
+  width: 100%;
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.loader-bar-container {
+  width: clamp(200px, 50vw, 400px);
+  height: 4px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 2px;
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+.loader-bar {
+  height: 100%;
+  background: #000;
+  width: 0%;
+  border-radius: 2px;
+  animation: loadProgress 2s ease-in-out forwards;
+}
+
+@keyframes loadProgress {
+  0% {
+    width: 0%;
+  }
+  50% {
+    width: 70%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+.loader-progress {
+  font-family: "Bebas Neue", system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: #000;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+/* Top Navigation */
+.top-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 70px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2rem;
+  z-index: 10000;
+  background: transparent;
+  pointer-events: none;
+}
+
+.nav-logo,
+.hamburger-menu {
+  pointer-events: auto;
+}
+
+.nav-logo {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+  font-family: "Bebas Neue", system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  color: #000;
+}
+
+.logo-first {
+  font-size: 1.2rem;
+  font-weight: 300;
+  letter-spacing: 0.15em;
+}
+
+.logo-last {
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  margin-top: -0.2rem;
+}
+
+.hamburger-menu {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  color: #000;
+  transition: transform 0.3s ease;
+}
+
+.hamburger-menu:hover {
+  transform: scale(1.1);
+}
+
+.hamburger-line {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
+}
+
+.hamburger-menu:hover .line-1 {
+  transform: translateX(-3px);
+}
+
+.hamburger-menu:hover .line-2 {
+  transform: scaleX(0.8);
+}
+
+.hamburger-menu:hover .line-3 {
+  transform: translateX(3px);
+}
+
+/* Side Menu Panel */
+.menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  z-index: 10001;
+}
+
+.menu-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.menu-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 50vw;
+  max-width: 500px;
+  height: 100%;
+  background: #000;
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 10002;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+}
+
+.menu-panel.active {
+  transform: translateX(0);
+}
+
+.menu-close {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  color: #fff;
+  transition: transform 0.3s ease;
+}
+
+.menu-close:hover {
+  transform: rotate(90deg);
+}
+
+.menu-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-top: 6rem;
+}
+
+.menu-item {
+  color: #fff;
+  text-decoration: none;
+  font-family: "Bebas Neue", system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  font-size: 2.5rem;
+  line-height: 1.2;
+  transition: all 0.3s ease;
+  position: relative;
+  padding-left: 0;
+}
+
+.menu-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 2px;
+  background: #fff;
+  transition: width 0.3s ease;
+}
+
+.menu-item:hover {
+  padding-left: 2rem;
+  opacity: 0.7;
+}
+
+.menu-item:hover::before {
+  width: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .menu-panel {
+    width: 80vw;
+    max-width: none;
+  }
+  
+  .menu-item {
+    font-size: 2rem;
+  }
+  
+  .top-nav {
+    top: 50px; /* Push down to avoid WIP banner overlap */
+  }
+}
+
+/* Work in Progress Banner */
+.wip-banner {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 600px;
+  width: 90%;
+  background: #ff9800;
+  color: #000;
+  padding: 10px 0;
+  font-weight: bold;
+  font-size: 14px;
+  z-index: 9999;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 0 0 8px 8px;
+  overflow: hidden;
+}
+
+.wip-banner-track {
+  display: flex;
+  width: max-content;
+  animation: wip-ticker-scroll 20s linear infinite;
+}
+
+.wip-banner-item {
+  padding: 0 3rem;
+  white-space: nowrap;
+}
+
+@keyframes wip-ticker-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
 /* Canvas (acts like the demo 'box') */
 /* Use a stable --vh variable for mobile to avoid address-bar resizing issues.
    The canvas sits in a fixed full-bleed container using inset:0 so it always
@@ -36,7 +355,7 @@ h1, h2, h3, h4, h5, h6, p { display: block; width: 100%; }
   transform: translateZ(0) scale(1);
   transform-origin: center center;
   background: rgba(255, 230, 130, 0.9); /* pleasant pale yellow */
-  z-index: 2; /* midground */
+  z-index: 1; /* background layer */
 }
 
 /* Sections - five full-viewport sections */
@@ -49,14 +368,48 @@ h1, h2, h3, h4, h5, h6, p { display: block; width: 100%; }
   font-size: clamp(1.25rem, 2.5vw, 2rem);
   z-index: 3; /* foreground */
   position: relative;
-  border: 1px solid rgba(0, 0, 0, 0.95);
+  //border: 1px solid rgba(0, 0, 0, 0.95);
 }
 
-/* Section 3 sits behind canvas and other sections */
+/* Section 3 sits in front of canvas */
 #section3 {
-  z-index: 1; /* background layer */
-  
+  z-index: 2; /* foreground layer - above canvas */
 }
+
+/* Section 3 stacked layout */
+.section3-stack {
+  display: flex !important;
+  flex-direction: column;
+  gap: 0;
+  padding: 0 !important;
+  max-width: 100% !important;
+  align-items: center;
+}
+
+.section3-box {
+  flex: 1;
+  min-height: 33.333vh; /* Equal thirds of viewport */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  text-align: center;
+  width: 100%;
+}
+
+.section3-box h2,
+.section3-box p {
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.section3-empty {
+  /* Middle box is empty - scaled canvas will fit here */
+  background: transparent;
+}
+
 
 /* Simple content wrapper */
 .container {
@@ -79,29 +432,24 @@ h1, h2, h3, h4, h5, h6, p { display: block; width: 100%; }
   
 }
 
-/* (section 2 desktop overrides removed — section2 content will use the default section layout) */
+/* Section 2: centered single column layout */
+.section2-centered {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+}
+
+.section2-content {
+  max-width: 800px;
+  text-align: center;
+  width: 100%;
+}
 
 /* Desktop: make section 2 a single centered column positioned near the top */
 @media (min-width: 1024px) {
   #section2 {
-    align-items: flex-start; /* push content toward top */
-    padding-top: 12vh; /* space from the top */
-  }
-
-  #section2 .section-inner {
-    grid-template-columns: 1fr; /* single column */
-    grid-template-rows: 1fr 1fr; /* two equal height rows */
-    justify-items: center; /* center horizontally */
-    align-items: stretch; /* stretch items to fill row height */
-    gap: 0; /* no gap between rows */
-    overflow: visible; /* allow ticker animation to overflow */
-  }
-
-  #section2 .col-left,
-  #section2 .col-right {
-    width: 100%;
-    text-align: center; /* center text */
-    min-height: 50vh; /* ensure each takes at least 50% viewport height */
+    align-items: center;
+    padding-top: 12vh;
   }
 }
 
@@ -241,8 +589,10 @@ body.js #section1 .col-left { opacity: 0; transform: translateY(20px); }
   .container { padding: 1.25rem; }
   /* center text on mobile for a nicer stacked look */
   .col-left, .col-right { text-align: center; }
+  /* Fix h2 width in section 1 to prevent shifting on role change */
+  #section1 h2 { width: 100%; max-width: 90vw; }
   /* Reduce top padding for section 2 on mobile to sit higher */
-  #section2 { padding-top: 6vh; }
+  #section2 { padding-top: 0vh; }
   /* Add side padding for ticker and icons in section 2 */
   #section2 .col-left, #section2 .col-right { padding: 0 1rem; }
   /* Force minimum height for left column in section 2 on mobile */
@@ -266,6 +616,27 @@ body.js #section1 .col-left { opacity: 0; transform: translateY(20px); }
   transform: translateY(18px);
   opacity: 0;
   will-change: transform, opacity;
+}
+
+/* Rotating role container - fixed width to prevent layout shift */
+.rotating-role {
+  display: inline-block;
+  min-width: 15ch; /* fits " Pixel Perfectionist" with leading space */
+}
+
+/* Role letter animation */
+.role-letter {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(10px);
+  will-change: transform, opacity;
+}
+
+/* Reduce h2 font size in section 1 to prevent line breaks */
+#section1 h2 {
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  white-space: nowrap;
+  text-align: left;
 }
 
 /* Section 2 pinning / show styles removed; content will use default section layout and animations */
@@ -374,5 +745,5 @@ p,
 
 
 section3 {
-  z-index: -1;
+  z-index: 1;
 }

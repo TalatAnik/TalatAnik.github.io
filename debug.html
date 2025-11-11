@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D Scene Debug - Portfolio</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #1a1a1a;
+      color: #fff;
+      overflow: hidden;
+    }
+    #canvas {
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #fff5d7;
+    }
+    .ui-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    .controls-panel {
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      max-width: 320px;
+      max-height: 80vh;
+      overflow-y: auto;
+      pointer-events: auto;
+    }
+    .control-group {
+      margin-bottom: 15px;
+    }
+    .control-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .control-group input {
+      width: 100%;
+      padding: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+      color: #fff;
+      font-size: 12px;
+    }
+    .control-group input[type="range"] {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.2);
+      outline: none;
+    }
+    .control-group input[type="range"]::-webkit-slider-thumb {
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #4CAF50;
+      cursor: pointer;
+    }
+    .values {
+      font-size: 11px;
+      color: #ccc;
+      margin-top: 3px;
+      font-family: monospace;
+    }
+    h1 {
+      font-size: 18px;
+      margin-bottom: 20px;
+      color: #4CAF50;
+    }
+    .info {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 12px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    .button-group {
+      display: flex;
+      gap: 8px;
+      margin-top: 15px;
+    }
+    button {
+      flex: 1;
+      padding: 10px;
+      background: rgba(76, 175, 80, 0.8);
+      border: none;
+      border-radius: 4px;
+      color: white;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: rgba(76, 175, 80, 1);
+    }
+    button.secondary {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    button.secondary:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+    .status {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-family: monospace;
+    }
+    .help {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 15px;
+      border-radius: 4px;
+      font-size: 12px;
+      max-width: 300px;
+    }
+    .help h4 {
+      margin-bottom: 8px;
+      color: #4CAF50;
+    }
+    .help ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+    .help li {
+      margin-bottom: 4px;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+
+  <div class="ui-overlay">
+    <div class="controls-panel">
+      <h1>🎛️ 3D Scene Debug</h1>
+      <div class="info">
+        <strong>Mouse Controls:</strong><br>
+        • Left click + drag: Rotate camera<br>
+        • Right click + drag: Pan camera<br>
+        • Scroll wheel: Zoom in/out
+      </div>
+
+      <div class="control-group">
+        <label>Camera FOV: <span id="fov-value">50</span>°</label>
+        <input type="range" id="fov" min="10" max="120" value="50" step="1">
+      </div>
+
+      <div class="control-group">
+        <label>Camera Distance: <span id="distance-value">5</span></label>
+        <input type="range" id="distance" min="0.5" max="50" value="5" step="0.1">
+      </div>
+
+      <div class="control-group">
+        <label>Model Scale: <span id="scale-value">1</span></label>
+        <input type="range" id="scale" min="0.1" max="10" value="1" step="0.1">
+      </div>
+
+      <div class="control-group">
+        <label>Model X: <span id="model-x-value">0</span></label>
+        <input type="range" id="model-x" min="-10" max="10" value="0" step="0.1">
+      </div>
+
+      <div class="control-group">
+        <label>Model Y: <span id="model-y-value">0</span></label>
+        <input type="range" id="model-y" min="-10" max="10" value="0" step="0.1">
+      </div>
+
+      <div class="control-group">
+        <label>Model Z: <span id="model-z-value">0</span></label>
+        <input type="range" id="model-z" min="-10" max="10" value="0" step="0.1">
+      </div>
+
+      <div class="control-group">
+        <label>Rotation Speed: <span id="rotation-value">0.005</span></label>
+        <input type="range" id="rotation" min="0" max="0.05" value="0.005" step="0.001">
+      </div>
+
+      <div class="control-group">
+        <label>Auto Rotate: <input type="checkbox" id="auto-rotate" checked></label>
+      </div>
+
+      <div class="button-group">
+        <button id="reset-camera-btn">Reset Camera</button>
+        <button id="reset-model-btn">Reset Model</button>
+      </div>
+
+      <div class="button-group">
+        <button id="copy-settings-btn">Copy Settings</button>
+        <button class="secondary" id="toggle-grid-btn">Toggle Grid</button>
+      </div>
+    </div>
+
+    <div class="status" id="status">
+      Loading 3D scene...
+    </div>
+
+    <div class="help">
+      <h4>🎯 Tips</h4>
+      <ul>
+        <li>Find your perfect camera angle using mouse controls</li>
+        <li>Use sliders for fine-tuning positions</li>
+        <li>Copy settings when satisfied</li>
+        <li>Grid helps with positioning reference</li>
+      </ul>
+    </div>
+  </div>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+    import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+
+    // Scene setup
+    const canvas = document.getElementById('canvas');
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0xfff5d7, 1);
+
+    // OrbitControls for mouse interaction
+    const controls = new OrbitControls(camera, canvas);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.enableZoom = true;
+    controls.enablePan = true;
+    controls.enableRotate = true;
+
+    // Grid helper
+    const gridHelper = new THREE.GridHelper(20, 20, 0x888888, 0x444444);
+    scene.add(gridHelper);
+    gridHelper.visible = true;
+
+    // Lights
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    scene.add(ambientLight);
+
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    directionalLight.position.set(10, 10, 5);
+    scene.add(directionalLight);
+
+    // Load model
+    const loader = new GLTFLoader();
+    let model;
+    let rotationSpeed = 0.005;
+    let autoRotate = true;
+
+    loader.load(
+      '/assets/car_scene_01.glb',
+      (gltf) => {
+        model = gltf.scene;
+        scene.add(model);
+
+        // Center the model
+        const box = new THREE.Box3().setFromObject(model);
+        const center = box.getCenter(new THREE.Vector3());
+        model.position.sub(center);
+
+        // Initial scale
+        model.scale.setScalar(1);
+
+        // Position camera to view the model
+        camera.position.set(0, 2, 5);
+        controls.target.set(0, 0, 0);
+        controls.update();
+
+        updateControls();
+        updateStatus('✅ Model loaded successfully! Use mouse to navigate.');
+        console.log('Model loaded successfully');
+      },
+      (progress) => {
+        const percent = Math.round((progress.loaded / progress.total) * 100);
+        updateStatus(`📦 Loading model: ${percent}%`);
+      },
+      (error) => {
+        updateStatus('❌ Error: Model file not found. Place your .glb file in assets/models/car_scene_01.glb');
+        console.error('Error loading GLB model:', error);
+
+        // Create a placeholder cube to show the scene is working
+        const geometry = new THREE.BoxGeometry(1, 1, 1);
+        const material = new THREE.MeshLambertMaterial({ color: 0x4CAF50 });
+        const cube = new THREE.Mesh(geometry, material);
+        scene.add(cube);
+        model = cube; // So controls work
+
+        updateStatus('⚠️ Using placeholder cube - add your GLB file to continue');
+      }
+    );
+
+    // Animation loop
+    function animate() {
+      requestAnimationFrame(animate);
+
+      controls.update(); // Required for damping
+
+      if (model && autoRotate) {
+        model.rotation.y += rotationSpeed;
+      }
+
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // Control event listeners
+    document.getElementById('fov').addEventListener('input', (e) => {
+      camera.fov = parseFloat(e.target.value);
+      camera.updateProjectionMatrix();
+      document.getElementById('fov-value').textContent = e.target.value;
+    });
+
+    document.getElementById('distance').addEventListener('input', (e) => {
+      const distance = parseFloat(e.target.value);
+      const direction = new THREE.Vector3();
+      camera.getWorldDirection(direction);
+      direction.multiplyScalar(-distance);
+      camera.position.copy(controls.target).add(direction);
+      controls.update();
+      document.getElementById('distance-value').textContent = e.target.value;
+    });
+
+    document.getElementById('scale').addEventListener('input', (e) => {
+      if (model) {
+        model.scale.setScalar(parseFloat(e.target.value));
+      }
+      document.getElementById('scale-value').textContent = e.target.value;
+    });
+
+    document.getElementById('model-x').addEventListener('input', (e) => {
+      if (model) {
+        model.position.x = parseFloat(e.target.value);
+      }
+      document.getElementById('model-x-value').textContent = e.target.value;
+    });
+
+    document.getElementById('model-y').addEventListener('input', (e) => {
+      if (model) {
+        model.position.y = parseFloat(e.target.value);
+      }
+      document.getElementById('model-y-value').textContent = e.target.value;
+    });
+
+    document.getElementById('model-z').addEventListener('input', (e) => {
+      if (model) {
+        model.position.z = parseFloat(e.target.value);
+      }
+      document.getElementById('model-z-value').textContent = e.target.value;
+    });
+
+    document.getElementById('rotation').addEventListener('input', (e) => {
+      rotationSpeed = parseFloat(e.target.value);
+      document.getElementById('rotation-value').textContent = e.target.value;
+    });
+
+    document.getElementById('auto-rotate').addEventListener('change', (e) => {
+      autoRotate = e.target.checked;
+    });
+
+    // Update control values
+    function updateControls() {
+      document.getElementById('fov-value').textContent = camera.fov;
+      document.getElementById('distance-value').textContent = camera.position.distanceTo(controls.target).toFixed(1);
+      if (model) {
+        document.getElementById('scale-value').textContent = model.scale.x.toFixed(2);
+        document.getElementById('model-x-value').textContent = model.position.x.toFixed(2);
+        document.getElementById('model-y-value').textContent = model.position.y.toFixed(2);
+        document.getElementById('model-z-value').textContent = model.position.z.toFixed(2);
+      }
+      document.getElementById('rotation-value').textContent = rotationSpeed.toFixed(3);
+    }
+
+    // Update controls on camera change
+    controls.addEventListener('change', updateControls);
+
+    // Button event listeners
+    document.getElementById('reset-camera-btn').addEventListener('click', () => {
+      camera.position.set(0, 2, 5);
+      camera.fov = 50;
+      camera.updateProjectionMatrix();
+      controls.target.set(0, 0, 0);
+      controls.update();
+      updateControls();
+      updateStatus('Camera reset to default position');
+    });
+
+    document.getElementById('reset-model-btn').addEventListener('click', () => {
+      if (model) {
+        // Re-center the model
+        const box = new THREE.Box3().setFromObject(model);
+        const center = box.getCenter(new THREE.Vector3());
+        model.position.sub(center);
+        model.scale.setScalar(1);
+        model.rotation.set(0, 0, 0);
+        updateControls();
+        updateStatus('Model reset to center');
+      } else {
+        updateStatus('No model loaded to reset');
+      }
+    });
+
+    document.getElementById('copy-settings-btn').addEventListener('click', () => {
+      const settings = {
+        camera: {
+          position: {
+            x: camera.position.x,
+            y: camera.position.y,
+            z: camera.position.z
+          },
+          target: {
+            x: controls.target.x,
+            y: controls.target.y,
+            z: controls.target.z
+          },
+          fov: camera.fov
+        },
+        model: model ? {
+          scale: model.scale.x,
+          position: {
+            x: model.position.x,
+            y: model.position.y,
+            z: model.position.z
+          },
+          rotation: {
+            x: model.rotation.x,
+            y: model.rotation.y,
+            z: model.rotation.z
+          }
+        } : null,
+        controls: {
+          autoRotate: autoRotate,
+          rotationSpeed: rotationSpeed
+        }
+      };
+
+      navigator.clipboard.writeText(JSON.stringify(settings, null, 2))
+        .then(() => updateStatus('✅ Settings copied to clipboard!'))
+        .catch(() => updateStatus('❌ Failed to copy settings'));
+    });
+
+    document.getElementById('toggle-grid-btn').addEventListener('click', () => {
+      gridHelper.visible = !gridHelper.visible;
+      updateStatus(gridHelper.visible ? 'Grid shown' : 'Grid hidden');
+    });
+
+    // Reset functions (keeping for backward compatibility)
+    window.resetCamera = function() {
+      camera.position.set(0, 2, 5);
+      camera.fov = 50;
+      camera.updateProjectionMatrix();
+      controls.target.set(0, 0, 0);
+      controls.update();
+      updateControls();
+    };
+
+    window.resetModel = function() {
+      if (model) {
+        model.position.set(0, 0, 0);
+        model.scale.setScalar(1);
+        model.rotation.set(0, 0, 0);
+      }
+      updateControls();
+    };
+
+    window.toggleGrid = function() {
+      gridHelper.visible = !gridHelper.visible;
+    };
+
+    // Copy settings to clipboard
+    window.copySettings = function() {
+      const settings = {
+        camera: {
+          position: {
+            x: camera.position.x,
+            y: camera.position.y,
+            z: camera.position.z
+          },
+          target: {
+            x: controls.target.x,
+            y: controls.target.y,
+            z: controls.target.z
+          },
+          fov: camera.fov
+        },
+        model: model ? {
+          scale: model.scale.x,
+          position: {
+            x: model.position.x,
+            y: model.position.y,
+            z: model.position.z
+          },
+          rotation: {
+            x: model.rotation.x,
+            y: model.rotation.y,
+            z: model.rotation.z
+          }
+        } : null,
+        controls: {
+          autoRotate: autoRotate,
+          rotationSpeed: rotationSpeed
+        }
+      };
+
+      navigator.clipboard.writeText(JSON.stringify(settings, null, 2))
+        .then(() => updateStatus('Settings copied to clipboard!'))
+        .catch(() => updateStatus('Failed to copy settings'));
+    };
+
+    function updateStatus(message) {
+      document.getElementById('status').textContent = message;
+    }
+
+    // Handle window resize
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // Initial status
+    updateStatus('Initializing 3D scene...');
+  </script>
+</body>
+</html>
