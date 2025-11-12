@@ -208,7 +208,12 @@
       </div>
 
       <div class="control-group">
-        <label>Auto Rotate: <input type="checkbox" id="auto-rotate" checked></label>
+        <label>Shader Threshold: <span id="threshold-value">0.5</span></label>
+        <input type="range" id="threshold" min="0" max="1" value="0.5" step="0.01">
+      </div>
+
+      <div class="control-group">
+        <label>Auto Rotate: <input type="checkbox" id="auto-rotate"></label>
       </div>
 
       <div class="button-group">
@@ -233,6 +238,7 @@
         <li>Use sliders for fine-tuning positions</li>
         <li>Copy settings when satisfied</li>
         <li>Grid helps with positioning reference</li>
+        <li><strong>Press F12</strong> to open developer tools</li>
       </ul>
     </div>
   </div>
@@ -240,6 +246,7 @@
   <script type="module">
     import * as THREE from 'three';
     import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+    import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
     import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
     // Scene setup
@@ -263,68 +270,130 @@
     scene.add(gridHelper);
     gridHelper.visible = true;
 
-    // Lights
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-    scene.add(ambientLight);
+    // No lights needed - using unlit/emissive shader
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-    directionalLight.position.set(10, 10, 5);
-    scene.add(directionalLight);
+    // Load texture
+    const textureLoader = new THREE.TextureLoader();
+    const coffeeTexture = textureLoader.load('/assets/coffee_texture.jpeg');
 
-    // Load model
-    const loader = new GLTFLoader();
+    // Custom Inverted Toon Shader - Unlit/Emissive with Texture
+    const toonShaderMaterial = new THREE.ShaderMaterial({
+      uniforms: {
+        threshold: { value: 0.5 },
+        colorMap: { value: coffeeTexture }
+      },
+      vertexShader: `
+        varying vec3 vNormal;
+        varying vec2 vUv;
+        
+        void main() {
+          // Transform normal to view space for camera-relative shading
+          vNormal = normalize(normalMatrix * normal);
+          vUv = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform float threshold;
+        uniform sampler2D colorMap;
+        varying vec3 vNormal;
+        varying vec2 vUv;
+        
+        void main() {
+          // Sample texture to get brightness control
+          vec4 texColor = texture2D(colorMap, vUv);
+          float texBrightness = (texColor.r + texColor.g + texColor.b) / 3.0;
+          
+          // Use only texture brightness (no camera angle dependency)
+          // Toon threshold - clamp to black or white
+          float toonIntensity = step(threshold, texBrightness);
+          
+          // INVERT: black becomes white, white becomes black
+          // Emissive - no lighting needed, self-illuminated
+          vec3 color = vec3(1.0 - toonIntensity);
+          
+          gl_FragColor = vec4(color, 1.0);
+        }
+      `
+    });
+
+    // Function to apply toon shader to model
+    function applyToonShader(object) {
+      object.traverse((child) => {
+        if (child.isMesh) {
+          child.material = toonShaderMaterial.clone();
+          child.material.needsUpdate = true;
+        }
+      });
+    }
+
+    // Load models
+    const gltfLoader = new GLTFLoader();
+    const fbxLoader = new FBXLoader();
     let model;
     let rotationSpeed = 0.005;
-    let autoRotate = true;
+    let autoRotate = false;
 
-    loader.load(
-      '/assets/car_scene_01.glb',
-      (gltf) => {
-        model = gltf.scene;
+    // Load Combined Scene (FBX)
+    fbxLoader.load(
+      '/assets/cofee_keyboard.fbx',
+      (fbx) => {
+        model = fbx;
         scene.add(model);
 
-        // Center the model
+        // Apply inverted toon shader
+        applyToonShader(model);
+
+        // Initial scale - scale down by factor of 10 FIRST
+        model.scale.setScalar(0.01);
+
+        // Center the model AFTER scaling
         const box = new THREE.Box3().setFromObject(model);
         const center = box.getCenter(new THREE.Vector3());
-        model.position.sub(center);
+        model.position.set(-center.x, -center.y, -center.z);
 
-        // Initial scale
-        model.scale.setScalar(1);
-
-        // Position camera to view the model
+        // Position camera to view the scene
         camera.position.set(0, 2, 5);
         controls.target.set(0, 0, 0);
         controls.update();
 
+        // Store animations if present
+        if (fbx.animations && fbx.animations.length > 0) {
+          const mixer = new THREE.AnimationMixer(model);
+          fbx.animations.forEach((clip) => {
+            mixer.clipAction(clip).play();
+          });
+          model.userData.mixer = mixer;
+          console.log(`Found ${fbx.animations.length} animation(s) in combined model`);
+        }
+
         updateControls();
-        updateStatus('✅ Model loaded successfully! Use mouse to navigate.');
-        console.log('Model loaded successfully');
+        updateStatus('✅ Coffee + Keyboard scene loaded with textures and animations!');
+        console.log('Combined FBX scene loaded successfully');
       },
       (progress) => {
         const percent = Math.round((progress.loaded / progress.total) * 100);
-        updateStatus(`📦 Loading model: ${percent}%`);
+        updateStatus(`📦 Loading combined scene: ${percent}%`);
       },
       (error) => {
-        updateStatus('❌ Error: Model file not found. Place your .glb file in assets/models/car_scene_01.glb');
-        console.error('Error loading GLB model:', error);
-
-        // Create a placeholder cube to show the scene is working
-        const geometry = new THREE.BoxGeometry(1, 1, 1);
-        const material = new THREE.MeshLambertMaterial({ color: 0x4CAF50 });
-        const cube = new THREE.Mesh(geometry, material);
-        scene.add(cube);
-        model = cube; // So controls work
-
-        updateStatus('⚠️ Using placeholder cube - add your GLB file to continue');
+        updateStatus('❌ Error loading coffee_keyboard.fbx');
+        console.error('Combined scene load error:', error);
       }
     );
 
     // Animation loop
+    const clock = new THREE.Clock();
     function animate() {
       requestAnimationFrame(animate);
 
       controls.update(); // Required for damping
 
+      // Update animation mixer if it exists
+      if (model && model.userData.mixer) {
+        model.userData.mixer.update(clock.getDelta());
+      }
+
+      // Auto-rotate model
       if (model && autoRotate) {
         model.rotation.y += rotationSpeed;
       }
@@ -383,6 +452,22 @@
       document.getElementById('rotation-value').textContent = e.target.value;
     });
 
+    document.getElementById('threshold').addEventListener('input', (e) => {
+      const thresholdValue = parseFloat(e.target.value);
+      toonShaderMaterial.uniforms.threshold.value = thresholdValue;
+      
+      // Update all mesh materials if model exists
+      if (model) {
+        model.traverse((child) => {
+          if (child.isMesh && child.material.uniforms && child.material.uniforms.threshold) {
+            child.material.uniforms.threshold.value = thresholdValue;
+          }
+        });
+      }
+      
+      document.getElementById('threshold-value').textContent = thresholdValue.toFixed(2);
+    });
+
     document.getElementById('auto-rotate').addEventListener('change', (e) => {
       autoRotate = e.target.checked;
     });
@@ -422,8 +507,9 @@
         model.position.sub(center);
         model.scale.setScalar(1);
         model.rotation.set(0, 0, 0);
+        
         updateControls();
-        updateStatus('Model reset to center');
+        updateStatus('Scene reset to center');
       } else {
         updateStatus('No model loaded to reset');
       }

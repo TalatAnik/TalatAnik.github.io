@@ -3,9 +3,8 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
 import 'lenis/dist/lenis.css';
-// Temporarily removed Three.js imports
-// import * as THREE from 'three';
-// import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import * as THREE from 'three';
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
 
 // Register ScrollTrigger
 gsap.registerPlugin(ScrollTrigger);
@@ -116,7 +115,153 @@ const canvas = document.getElementById('canvas');
 if (!canvas) {
   console.warn('No canvas element found.');
 } else {
-  // Temporarily removed Three.js 3D model - using solid color background for now
+  // Three.js Scene Setup
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+  const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: false, antialias: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setClearColor(0xffc259, 1);
+
+  // Load texture
+  const textureLoader = new THREE.TextureLoader();
+  const coffeeTexture = textureLoader.load('/assets/coffee_texture.jpeg');
+
+  // Custom Inverted Toon Shader - Unlit/Emissive with Texture
+  const toonShaderMaterial = new THREE.ShaderMaterial({
+    uniforms: {
+      threshold: { value: 0.5 },
+      colorMap: { value: coffeeTexture },
+    },
+    vertexShader: `
+      varying vec3 vNormal;
+      varying vec2 vUv;
+      
+      void main() {
+        vNormal = normalize(normalMatrix * normal);
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+      uniform float threshold;
+      uniform sampler2D colorMap;
+      varying vec3 vNormal;
+      varying vec2 vUv;
+      
+      void main() {
+        vec4 texColor = texture2D(colorMap, vUv);
+        float texBrightness = (texColor.r + texColor.g + texColor.b) / 3.0;
+        
+        float toonIntensity = step(threshold, texBrightness);
+        
+        // Use #ffc259 for white parts, black for dark parts
+        vec3 orangeColor = vec3(1.0, 0.761, 0.349); // #eae3ba in RGB
+        vec3 blackColor = vec3(0.0, 0.0, 0.0);
+        
+        vec3 color = mix(orangeColor, blackColor, toonIntensity);
+        
+        gl_FragColor = vec4(color, 1.0);
+      }
+    `,
+  });
+
+  // Function to apply toon shader to model
+  function applyToonShader(object) {
+    object.traverse((child) => {
+      if (child.isMesh) {
+        child.material = toonShaderMaterial.clone();
+        child.material.needsUpdate = true;
+      }
+    });
+  }
+
+  // Load Combined Scene
+  let model;
+  const fbxLoader = new FBXLoader();
+  fbxLoader.load(
+    '/assets/cofee_keyboard.fbx',
+    (fbx) => {
+      model = fbx;
+      scene.add(model);
+
+      applyToonShader(model);
+
+      // Apply settings from debug scene
+      model.scale.setScalar(0.01);
+      model.position.set(0.06689762509252484, -0.1410076509665467, 0.04645877228929271);
+      model.rotation.set(0, 0, 0);
+
+      // Position camera with debug scene settings
+      camera.position.set(-2.4638617947795374, 3.7220368303288636, 1.0381607043237284);
+      
+      // Set camera to look at the target from debug scene
+      camera.lookAt(-1.5000809339835084, -0.04632507682126457, -0.9890955196514428);
+
+      // Store animations if present
+      if (fbx.animations && fbx.animations.length > 0) {
+        const mixer = new THREE.AnimationMixer(model);
+        fbx.animations.forEach((clip) => {
+          mixer.clipAction(clip).play();
+        });
+        model.userData.mixer = mixer;
+        console.log(`Loaded ${fbx.animations.length} animation(s)`);
+      }
+
+      console.log('3D scene loaded successfully');
+    },
+    undefined,
+    (error) => {
+      console.error('Error loading 3D model:', error);
+    }
+  );
+
+  // Animation loop
+  const clock = new THREE.Clock();
+  const cameraTarget = new THREE.Vector3(-1.5000809339835084, -0.04632507682126457, -0.9890955196514428);
+  const baseCameraPos = new THREE.Vector3(-2.4638617947795374, 3.7220368303288636, 1.0381607043237284);
+  
+  // Mouse position tracking for parallax
+  let mouseX = 0;
+  let mouseY = 0;
+  
+  window.addEventListener('mousemove', (e) => {
+    // Normalize mouse position to -1 to 1 range
+    mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+    mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
+  });
+  
+  function animate3D() {
+    requestAnimationFrame(animate3D);
+
+    // Mouse-driven camera movement for parallax effect
+    const offsetX = mouseX * 0.1;
+    const offsetY = mouseY * 0.1;
+    const offsetZ = mouseX * 0.05;
+    
+    camera.position.set(
+      baseCameraPos.x + offsetX,
+      baseCameraPos.y + offsetY,
+      baseCameraPos.z + offsetZ
+    );
+    camera.lookAt(cameraTarget);
+
+    // Update animations
+    if (model && model.userData.mixer) {
+      model.userData.mixer.update(clock.getDelta());
+    }
+
+    renderer.render(scene, camera);
+  }
+  animate3D();
+
+  // Handle window resize
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+
   // Set a stable `--vh` CSS variable for mobile (avoids address-bar resize gaps)
   function setVh() {
     // Prefer the visualViewport height when available to avoid layout gaps

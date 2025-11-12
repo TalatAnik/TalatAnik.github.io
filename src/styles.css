@@ -368,7 +368,7 @@ h1, h2, h3, h4, h5, h6, p { display: block; width: 100%; }
   font-size: clamp(1.25rem, 2.5vw, 2rem);
   z-index: 3; /* foreground */
   position: relative;
-  //border: 1px solid rgba(0, 0, 0, 0.95);
+  border: 1px solid rgba(0, 0, 0, 0.95); */ */
 }
 
 /* Section 3 sits in front of canvas */
